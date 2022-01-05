@@ -10,7 +10,6 @@ npm-debug.*
 *.orig.*
 web-build/
 aceitesEsenciales.jks 
-android/app/google-services.json
 android/app/my-upload-key.keystore
 android/app/debug.keystore
 

@@ -1,4 +1,33 @@
 {
   "name": "doessentials_app",
-  "displayName": "doessentials_app"
+  "displayName": "doessentials_app",
+  "expo": {
+    "name": "doessentials",
+    "slug": "doessentials",
+    "version": "15.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.doessentials.app",
+      "buildNumber": 15
+    },
+    "android": {
+      "versionCode": 15,
+      "package": "com.doessentials.app",
+      "permissions": ["com.android.vending.BILLING"],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    }
+  }
 }
