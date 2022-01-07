@@ -47,7 +47,7 @@ const MemberDetail = ({ navigation, route }) => {
     let salesRef = firebase
       .firestore()
       .collection("sales")
-      .where("clientId", "==", member.id);
+      .where("createdBy", "==", member.id);
     salesRef = await salesRef.get();
     const newSales = salesRef.docs.map((s) => {
       return { ...s.data(), id: s.id };

@@ -18,11 +18,13 @@ Feather.loadFont();
 
 const EssentialOilDetail = ({ route, navigation }) => {
   const mountedRef = useRef(true)
-  const [client] = useGlobalState("client");
+  const [siteData] = useGlobalState("siteData");
+  const [eoData] = useState(siteData.essentialOilDetail);
+  const [client] = useGlobalState("client"); 
+  const [usageTypes] = useGlobalState("usageTypes");
   const [savedItems, setSavedItems] = useState(client.mySaves); 
   const [loading, setLoading] = useState(false); 
-  const { item, mainCategory, subcategory } = route.params;
- 
+  const { item, mainCategory, subcategory } = route.params; 
 
   useEffect(()=>{
     setSavedItems(client.mySaves)
@@ -80,9 +82,29 @@ const EssentialOilDetail = ({ route, navigation }) => {
             <Text style={styles.title}>{item.title}</Text>
           </View>
         </View>
-        {/* Description */}
         <View style={{ ...styles.content, paddingVertical: 30 }}>
+          {/* Description */}
           <Text style={styles.description}>{item.description}</Text>
+          {/* Usage type */}
+          { subcategory.showUsageType && item.usageType &&
+            <View style={styles.usageTypeContainer}>
+              <Text style={styles.usageTypeLabel}>
+                { eoData.usageType }:
+              </Text>
+              {usageTypes.map( (usageType, i) => {
+                return (
+                  <View key={i} style={{
+                      ...styles.usageTypeItem,
+                      backgroundColor: item.usageType && item.usageType === usageType.type ? colors['brandGreen'] : '#e3e3e3'
+                    }}>
+                    <Text style={styles.usageTypeName}>
+                      { usageType.name }
+                    </Text>
+                  </View>
+                )
+              })}
+            </View>
+          }
           {/* Action */}
           <View style={styles.actionContainer}>
             <TouchableOpacity style={styles.actionButtons} onPress={ ()=>saveItem() }>
@@ -155,6 +177,26 @@ const styles = StyleSheet.create({
   likeButton: {
     color: colors['text'],
     fontFamily: 'Raleway_500Medium'
+  },
+  usageTypeContainer: {
+    marginVertical: 20,
+    paddingVertical: 20,
+    borderTopWidth: .5,
+    borderTopColor: '#e3e3e3',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  usageTypeLabel: {
+    fontWeight: 'bold'
+  },
+  usageTypeItem: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    backgroundColor: '#e3e3e3',
+    borderRadius: 50
+  },
+  usageTypeName: {
+    color: colors['white']
   }
 });
 

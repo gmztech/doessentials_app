@@ -35,20 +35,24 @@ LogBox.ignoreLogs([`AsyncStorage has been extracted from react-native core and w
 store.setState('siteData', {})
 store.setState('plans', {})
 store.setState('client', {})
+store.setState('usageTypes', {})
 store.setState('clientTeam', null) 
 
 export default function App() {
   const mountedRef = useRef(true)
   const [siteContent, setSiteContent] = useGlobalState('siteData');
   const [plans, setPlans] = useGlobalState('plans');
+  const [usageTypes, setUsageTypes] = useGlobalState('usageTypes'); 
   let [fontsLoaded] = useState({ });
 
   const getData = async() => {
     const res = await configs();
     const siteDataContent = (res.find(c => c.type === 'site_content') || {}).data
     const siteDataPlans = (res.find(c => c.type === 'plans') || {}).data
+    const siteDataUsageTypes = (res.find(c => c.type === 'usageTypes') || {}).data
     setSiteContent(siteDataContent)
     setPlans(siteDataPlans)
+    setUsageTypes(siteDataUsageTypes)
   }
 
   useEffect(() => {
@@ -58,7 +62,7 @@ export default function App() {
     fetchData();
     return () => { mountedRef.current = false }
   }, [])   
-  if (!fontsLoaded || !Object.keys(siteContent).length || !plans.length) {
+  if (!fontsLoaded || !Object.keys(siteContent).length || !plans.length || !usageTypes.length) {
     return <></>;
   } else {
     return (

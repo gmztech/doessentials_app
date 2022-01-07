@@ -24,7 +24,7 @@ const onUserCreate = async (user) =>
   }); 
 
 exports.welcomeEmail = functions.firestore
-  .document("createdClients/{createdClientId}")
+  .document("createdClients/{created}")
   .onCreate(async (snap) => {
     try {
       const user = snap.data();

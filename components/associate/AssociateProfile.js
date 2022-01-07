@@ -55,7 +55,7 @@ const AssociateProfile = ({ navigation, route }) => {
     let salesRef = firebase
       .firestore()
       .collection("sales")
-      .where("clientId", "==", client.id);
+      .where("createdBy", "==", client.id);
     salesRef = await salesRef.get();
     const newSales = salesRef.docs.map((s) => {
       return { ...s.data(), id: s.id };

@@ -22,6 +22,7 @@ import MyLikes from "./MyLikes";
 import MyProfile from "./MyProfile";
 import NavigationTabs from "../common/NavigationTabs";
 import gs from "../../assets/css/GeneralStyles";  
+import MyPurchases from "./MyPurchases";
 const Profile = ({ navigation, route }) => {
 
   const [user, setUser] = useGlobalState("client");
@@ -119,6 +120,22 @@ const Profile = ({ navigation, route }) => {
                   {profileData.myprofileTabTitle}
                 </Text>
               </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  ...styles.tabTitle,
+                  ...setTabContainerStyle("my_purchases", selectedTab),
+                }}
+                onPress={() => setSelectedTab("my_purchases")}
+              >
+                <Text
+                  style={{
+                    ...styles.tabTitleText,
+                    fontFamily: setText("my_purchases"),
+                  }}
+                >
+                  {profileData.mypurchasesTabTitle}
+                </Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.tabContent}>
               {selectedTab === "my_likes" ? (
@@ -135,6 +152,11 @@ const Profile = ({ navigation, route }) => {
               ) : (
                 <></>
               )}
+              {selectedTab === "my_purchases" ? (
+                <MyPurchases  navigation={navigation}/>
+              ) : (
+                <></>
+              )} 
             </View>
           </View>
         </ScrollView>

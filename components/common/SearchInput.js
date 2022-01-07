@@ -35,12 +35,11 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     borderRadius: 30,
     paddingLeft: 40,
-    paddingVertical: 15,
     marginVertical: 20,
   }, 
   searchIcon: {
     position: "absolute",
-    top: 18,
+    top: 15,
     left: 10,
   },
   searchInput: {

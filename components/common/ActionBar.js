@@ -82,6 +82,7 @@ const buttonStrategy = {
       {!user.associated && (
         <View style={{ flexDirection: "row" }}>
           <Button
+            fontSize={15}
             label={generalData.beAssociate}
             background="brandPurple"
             onPress={() => toggleAssociatePurchase(true)}

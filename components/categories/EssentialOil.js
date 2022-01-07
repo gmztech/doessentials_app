@@ -127,11 +127,16 @@ const EssentialOil = ({ route, navigation }) => {
           backSize={30}
           navigation={navigation}
         ></ActionBar>
-        {/* Search input */}
         <View style={styles.content}>
+          {/* title */}
           <View style={{ ...styles.textContainer, marginTop: 10 }}>
             <Text style={styles.title}>{subcategory.title}</Text>
           </View>
+          {/* description */}
+          <View style={{ ...styles.textDescContainer, marginTop: 10 }}>
+            <Text style={styles.description}>{subcategory.description}</Text>
+          </View>
+          {/* Search input */}
           <SearchInput onChange={filterItems} />
         </View>
         {/* Item list */}
@@ -159,6 +164,7 @@ const EssentialOil = ({ route, navigation }) => {
                     id: subcategory.id,
                     title: subcategory.title,
                     type: subcategory.type,
+                    showUsageType: subcategory.showUsageType
                   },
                 })
               }
@@ -250,12 +256,22 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     flexWrap: "wrap",
   },
+  textDescContainer: {
+
+  },
   title: {
     paddingVertical: 5,
     paddingHorizontal: 15,
     backgroundColor: colors["white"],
-    fontFamily: "Raleway_900Black",
     fontSize: 20,
+    color: colors["text"],
+    borderRadius: 10,
+  },
+  description: {
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    backgroundColor: colors["white"], 
+    fontSize: 15,
     color: colors["text"],
     borderRadius: 10,
   },

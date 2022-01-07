@@ -58,12 +58,19 @@ const CategoryItem = ({ index, category, navigation, item, team }) => {
   );
 };
 
+const categoryIcons = {
+  aceites_individuales: require(`../../assets/images/categories/aceites_individuales.png`),
+  bienestar: require(`../../assets/images/categories/bienestar.png`),
+  cuidado_personal: require(`../../assets/images/categories/cuidado_personal.png`),
+  mezcla_aceites: require(`../../assets/images/categories/mezcla_aceites.png`),
+};
+
 const styles = StyleSheet.create({
   categoryLabel: {
-    fontFamily: "Raleway_900Black",
-    fontSize: 20,
+    fontSize: 25,
     color: colors["text"],
     marginBottom: 10,
+    fontWeight: 'bold'
   },
   categoryContainer: {
     flexDirection: "row",
@@ -76,7 +83,7 @@ const styles = StyleSheet.create({
   categoryTitle: {
     color: colors["white"],
     fontFamily: "Raleway_500Medium",
-    fontSize: 16,
+    fontSize: 20,
     marginRight: 10,
   },
   categoryIcon: {
@@ -85,12 +92,5 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
 });
-
-const categoryIcons = {
-  aceites_individuales: require(`../../assets/images/categories/aceites_individuales.png`),
-  bienestar: require(`../../assets/images/categories/bienestar.png`),
-  cuidado_personal: require(`../../assets/images/categories/cuidado_personal.png`),
-  mezcla_aceites: require(`../../assets/images/categories/mezcla_aceites.png`),
-};
 
 export default CategorySlider;

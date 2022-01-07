@@ -172,7 +172,7 @@ const Home = ({ navigation, route }) => {
               </Text>
             </View>
             <View style={styles.textContainer}>
-              <Text style={styles.introduction}> {homeData.introduction}</Text>
+              <Text selectable style={styles.introduction}>{homeData.introduction}</Text>
             </View>
             <View style={styles.mainContent}>
               {categoryList && categoryList.length ? (
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: colors["brandGreen"],
     fontFamily: "Raleway_900Black",
-    fontSize: 20,
+    fontSize: 25,
     color: colors["white"],
     borderRadius: 10,
   },
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: "#ffffffdb",
     fontFamily: "Raleway_400Regular",
-    fontSize: 15,
+    fontSize: 20,
     color: colors["text"],
     borderRadius: 10,
   },

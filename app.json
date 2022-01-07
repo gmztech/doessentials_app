@@ -2,9 +2,8 @@
   "name": "doessentials_app",
   "displayName": "doessentials_app",
   "expo": {
-    "name": "doessentials",
-    "slug": "doessentials",
-    "version": "15.0.0",
+    "name": "Do Essentials",
+    "slug": "doessentials-app",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -17,11 +16,9 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.doessentials.app",
-      "buildNumber": 15
+      "bundleIdentifier": "com.doessentials.app"
     },
     "android": {
-      "versionCode": 15,
       "package": "com.doessentials.app",
       "permissions": ["com.android.vending.BILLING"],
       "adaptiveIcon": {

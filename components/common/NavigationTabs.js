@@ -41,7 +41,7 @@ const NavigationTabs = ({ route, navigation }) => {
           >
             <Feather
               name={b.icon}
-              size={25}
+              size={20}
               color={
                 routeName === b.route ? color : colors["text"]
               }
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    fontSize: 10,
+    fontSize: 15,
     color: colors["text"],
     fontFamily: "Raleway_900Black",
   },
