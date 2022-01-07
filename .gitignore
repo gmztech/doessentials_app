@@ -1,5 +1,4 @@
-node_modules/
-firebase/client-config.js
+node_modules/ 
 .expo/
 npm-debug.*
 *.jks
@@ -63,7 +62,6 @@ yarn-error.log
 buck-out/
 \.buckd/
 *.keystore
-!debug.keystore
 
 # Bundle artifacts
 *.jsbundle
