@@ -40,7 +40,7 @@ const MySales = ({ navigation, route }) => {
           <View style={styles.content}>
             {/* title */}
             <View style={styles.textContainer}>
-              <Text style={gs.title}>{salesData.mySales} </Text>
+              <Text style={{...gs.title, fontWeight: 'bold'}}>{salesData.mySales} </Text>
             </View>
             {/* dessctiption */}
             <View>

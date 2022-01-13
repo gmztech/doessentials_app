@@ -83,7 +83,7 @@ const Profile = ({ navigation, route }) => {
                 </Text>
                 <Text style={styles.contact}>
                   {" "}
-                  {user.phone} {"\n"} {'carolhazun@gmail.com'}
+                  {user.phone} {"\n"} {user.email}
                 </Text>
               </View>
             </View>

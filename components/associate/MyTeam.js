@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
     fontFamily: "Raleway_900Black",
     fontSize: 20,
     color: colors["text"],
+    fontWeight: 'bold'
   },
   myTeamDescription: {
     color: colors["text"],

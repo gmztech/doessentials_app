@@ -20,7 +20,6 @@
     },
     "android": {
       "package": "com.doessentials.app",
-      "permissions": ["com.android.vending.BILLING"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

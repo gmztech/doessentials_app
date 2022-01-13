@@ -28,6 +28,8 @@ import { RootSiblingParent } from "react-native-root-siblings";
 import { store, useGlobalState } from 'state-pool';
 import configs from './assets/data/data';
 import Teams from "./components/Teams";
+import CreateHealthConsult from "./components/healthConsult/CreateHealthConsult";
+import HealthConsult from "./components/healthConsult/HealthConsult";
 const Stack = createNativeStackNavigator();
 LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 LogBox.ignoreLogs([`AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage`]);
@@ -36,23 +38,27 @@ store.setState('siteData', {})
 store.setState('plans', {})
 store.setState('client', {})
 store.setState('usageTypes', {})
+store.setState('salesStatus', {})
 store.setState('clientTeam', null) 
 
 export default function App() {
   const mountedRef = useRef(true)
   const [siteContent, setSiteContent] = useGlobalState('siteData');
   const [plans, setPlans] = useGlobalState('plans');
-  const [usageTypes, setUsageTypes] = useGlobalState('usageTypes'); 
+  const [usageTypes, setUsageTypes] = useGlobalState('usageTypes');
+  const [salesStatus, setSalesStatus] = useGlobalState('salesStatus'); 
   let [fontsLoaded] = useState({ });
 
   const getData = async() => {
     const res = await configs();
     const siteDataContent = (res.find(c => c.type === 'site_content') || {}).data
     const siteDataPlans = (res.find(c => c.type === 'plans') || {}).data
-    const siteDataUsageTypes = (res.find(c => c.type === 'usageTypes') || {}).data
+    const siteDataUsageTypes = (res.find(c => c.type === 'usage_types') || {}).data
+    const siteSalesStatus = (res.find(c => c.type === 'sale_status') || {}).data
     setSiteContent(siteDataContent)
     setPlans(siteDataPlans)
     setUsageTypes(siteDataUsageTypes)
+    setSalesStatus(siteSalesStatus)
   }
 
   useEffect(() => {
@@ -62,7 +68,7 @@ export default function App() {
     fetchData();
     return () => { mountedRef.current = false }
   }, [])   
-  if (!fontsLoaded || !Object.keys(siteContent).length || !plans.length || !usageTypes.length) {
+  if (!fontsLoaded || !Object.keys(siteContent).length || !plans.length || !usageTypes.length || !salesStatus.length) {
     return <></>;
   } else {
     return (
@@ -125,6 +131,16 @@ export default function App() {
             <Stack.Screen
               name="EssentialOilDetail"
               component={EssentialOilDetail}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CreateHealthConsult"
+              component={CreateHealthConsult}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="HealthConsult"
+              component={HealthConsult}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

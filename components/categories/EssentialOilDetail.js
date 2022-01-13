@@ -14,6 +14,7 @@ import ActionBar from "../common/ActionBar";
 import Intro from "../common/Intro";
 import Feather from "react-native-vector-icons/Feather";
 import { useGlobalState } from "state-pool";
+import AssignConsultModal from "./AssignConsultModal";
 Feather.loadFont();
 
 const EssentialOilDetail = ({ route, navigation }) => {
@@ -23,7 +24,9 @@ const EssentialOilDetail = ({ route, navigation }) => {
   const [client] = useGlobalState("client"); 
   const [usageTypes] = useGlobalState("usageTypes");
   const [savedItems, setSavedItems] = useState(client.mySaves); 
+  const [showAssignConsultModal, setShowAssignConsultModal] = useState(false); 
   const [loading, setLoading] = useState(false); 
+  const [path, setPath] = useState(null); 
   const { item, mainCategory, subcategory } = route.params; 
 
   useEffect(()=>{
@@ -54,14 +57,24 @@ const EssentialOilDetail = ({ route, navigation }) => {
   const itemExist = () => {
     return (savedItems || [])
       .some(i => i.path === `${ mainCategory.id }/${ subcategory.id }/${ item.id }`)
-  } 
+  }  
   
   const share = () => {
     Share.share({
       title: "Compartir",
       message: `${item.title}\n\n${item.description}`,
     });
-  }; 
+  };  
+
+  const toggleShowAssignConsultModal = () => {
+    setPath({ 
+      item: item,
+      mainCategory: removeItems(mainCategory),
+      subcategory: removeItems(subcategory),
+      path: `${ mainCategory.id }/${ subcategory.id }/${ item.id }`
+    })
+    setShowAssignConsultModal(!showAssignConsultModal)
+  }
 
   return !item ? (
     <></>
@@ -107,6 +120,10 @@ const EssentialOilDetail = ({ route, navigation }) => {
           }
           {/* Action */}
           <View style={styles.actionContainer}>
+            {client.associated && <TouchableOpacity style={styles.actionButtons} onPress={ ()=>toggleShowAssignConsultModal() }>
+              <Feather style={styles.actionButtonIcon} color={colors["brandPurple"]} name={'award'} size={30}/>
+              <Text style={styles.likeButton}>Asignar</Text> 
+            </TouchableOpacity>}
             <TouchableOpacity style={styles.actionButtons} onPress={ ()=>saveItem() }>
               <Feather style={styles.actionButtonIcon} name={loading ? 'clock' : 'heart'} size={30}
                 color={itemExist() && !loading ? colors["danger"] : colors["lightGray"] } />
@@ -116,6 +133,11 @@ const EssentialOilDetail = ({ route, navigation }) => {
               <Feather style={styles.actionButtonIcon} name="share" size={30} color={colors["brandGreen"]} />
             </TouchableOpacity>
           </View>
+          {/* assign modal */}
+          {showAssignConsultModal && <AssignConsultModal
+            showAssignConsultModal={showAssignConsultModal}
+            path={path}
+            toggleShowAssignConsultModal={toggleShowAssignConsultModal}/>}    
         </View>
       </SafeAreaView>
     </View>

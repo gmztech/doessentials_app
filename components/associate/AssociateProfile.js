@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
-import { useIsFocused } from "@react-navigation/core";
+import { useIsFocused } from '@react-navigation/native';
 import colors from "../../assets/colors/colors";
 import { useGlobalState } from "state-pool";
 import ActionBar from "../common/ActionBar";
@@ -27,6 +27,7 @@ const AssociateProfile = ({ navigation, route }) => {
   const [client] = useGlobalState("client");
   const [team, setTeam] = useState([]);
   const [sales, setSales] = useState([]);
+  const [consults, setConsults] = useState([])
 
   useEffect(() => {
     getTeam();
@@ -63,6 +64,19 @@ const AssociateProfile = ({ navigation, route }) => {
     setSales(newSales);
   };
 
+  const getConsults = async(client) => {
+    let consultsRef = await firebase.firestore()
+      .collection("consults")
+      .where("upliner", "==", client.id)
+      .get()
+    setConsults(consultsRef.docs.map(d=>d.data()))
+  } 
+
+  useEffect(() => {
+    if ( isFocused ) { getConsults(client) }
+    return
+  }, [isFocused]);
+
   return (
     <View style={styles.container}>
       <SafeAreaView>
@@ -78,13 +92,55 @@ const AssociateProfile = ({ navigation, route }) => {
           />
           <View style={styles.content}>
             <View style={styles.textContainer}>
-              <Text style={styles.title}>
+              <Text style={{...styles.title, fontWeight: 'bold'}}>
                 {apData.hello}{" "}
                 <Text style={{ color: colors["brandPurple"] }}>
-                  {user.name}
+                  {client.name}
                 </Text>{" "}
                 {apData.welcome}
               </Text>
+            </View>
+            {/* consults card */}
+            <View style={styles.card}>
+            <View style={styles.cardHeader}>
+                <Text style={styles.cardHeaderTitle}>
+                  {apData.myClientsConsults} ({consults.length})
+                </Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("HealthConsult")}
+                >
+                  <Text style={styles.cardHeaderButton}>{apData.seeAll}</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.cardContent}>
+                <Text style={{ paddingBottom: 10, borderBottomColor: colors['lightGray'], borderBottomWidth: .5 }}>{ apData.consultDescription }</Text>
+                {consults.length ? (
+                  consults
+                    .slice(0, 4)
+                    .map((consult, i) => (
+                      <Consult
+                        key={i}
+                        navigation={navigation}
+                        consult={consult}
+                      />
+                    ))
+                ) : (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("CreateClient", { create: true })
+                    }
+                  >
+                    <Text
+                      style={{
+                        ...styles.noResult,
+                        color: colors["brandGreen"],
+                      }}
+                    >
+                      {apData.noTeamAvailable}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
             {/* team card */}
             <View style={styles.card}>
@@ -241,6 +297,30 @@ const Sale = ({ navigation, sale }) => {
   );
 };
 
+const Consult = ({ navigation, consult }) => {
+  return (
+    <TouchableOpacity
+      style={{...styles.memberContainer }}
+      onPress={() => navigation.navigate("CreateHealthConsult", { consult })}
+    >
+      <View>
+        <Text style={{ ...styles.saleName, 
+          color: !consult.recomendations || !consult.recomendations.length || !consult.notes || !consult.notes.length ? colors["brandGreen"] : colors["text"]
+        }}>
+          {consult.name}
+        </Text>  
+        <Text style={{ ...styles.saleName, 
+          fontWeight: 'bold',
+          color: !consult.recomendations || !consult.recomendations.length || !consult.notes || !consult.notes.length ? colors["brandGreen"] : colors["text"]
+        }}>
+          {consult.clientName}
+        </Text>   
+      </View>
+      <Feather name="chevron-right" size={20} color={!consult.recomendations || !consult.recomendations.length || !consult.notes || !consult.notes.length ? colors["brandGreen"] : colors["text"]} />
+    </TouchableOpacity>
+  )
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -287,6 +367,7 @@ const styles = StyleSheet.create({
     color: colors["text"],
     fontFamily: "Raleway_900Black",
     fontSize: 16,
+    fontWeight: 'bold'
   },
   cardHeaderButton: {
     color: colors["brandPurple"],
@@ -304,172 +385,7 @@ const styles = StyleSheet.create({
   saleName: {
     fontFamily: "Raleway_500Medium",
     color: colors["text"],
-  },
-});
-
-const user = {
-  name: "Isaias",
-  sales: [
-    {
-      client: "Angie Chacin",
-      date: new Date(1633379734957).toISOString(),
-      name: "Aceite Lavanda",
-      price: 16000,
-    },
-    {
-      client: "Isaias Gmez",
-      date: new Date(1630792014511).toISOString(),
-      name: "Aceite Pepermint",
-      price: 8000,
-    },
-    {
-      client: "Estefania Chacin",
-      date: new Date(1633379734957).toISOString(),
-      name: "Aceite Lemmon",
-      price: 10000,
-    },
-    {
-      client: "Francisco Chacin",
-      date: new Date(1628115910109).toISOString(),
-      name: "Difusor",
-      price: 60000,
-    },
-    {
-      client: "Angie Chacin",
-      date: new Date(1633379734957).toISOString(),
-      name: "Aceite Lavanda",
-      price: 16000,
-    },
-  ],
-};
-
-const { myTeam } = {
-  myTeam: [
-    {
-      name: "Carlos",
-      lastName: "Pérez",
-      associated: true,
-      email: "carlosperes@gmail.com",
-      phone: "65946216",
-      sales: [
-        {
-          client: "Angie Chacin",
-          date: new Date(1633379734957).toISOString(),
-          name: "Aceite Lavanda",
-          price: 16000,
-        },
-        {
-          client: "Isaias Gmez",
-          date: new Date(1630792014511).toISOString(),
-          name: "Aceite Pepermint",
-          price: 8000,
-        },
-        {
-          client: "Estefania Chacin",
-          date: new Date(1633379734957).toISOString(),
-          name: "Aceite Lemmon",
-          price: 10000,
-        },
-        {
-          client: "Francisco Chacin",
-          date: new Date(1628115910109).toISOString(),
-          name: "Difusor",
-          price: 60000,
-        },
-        {
-          client: "Angie Chacin",
-          date: new Date(1633379734957).toISOString(),
-          name: "Aceite Lavanda",
-          price: 16000,
-        },
-        {
-          client: "Isaias Gmez",
-          date: new Date(1630792014511).toISOString(),
-          name: "Aceite Pepermint",
-          price: 8000,
-        },
-        {
-          client: "Estefania Chacin",
-          date: new Date(1633379734957).toISOString(),
-          name: "Aceite Lemmon",
-          price: 10000,
-        },
-        {
-          client: "Francisco Chacin",
-          date: new Date(1628115910109).toISOString(),
-          name: "Difusor",
-          price: 60000,
-        },
-        {
-          client: "Angie Chacin",
-          date: new Date(1633379734957).toISOString(),
-          name: "Aceite Lavanda",
-          price: 16000,
-        },
-        {
-          client: "Isaias Gmez",
-          date: new Date(1630792014511).toISOString(),
-          name: "Aceite Pepermint",
-          price: 8000,
-        },
-        {
-          client: "Estefania Chacin",
-          date: new Date(1633379734957).toISOString(),
-          name: "Aceite Lemmon",
-          price: 10000,
-        },
-        {
-          client: "Francisco Chacin",
-          date: new Date(1628115910109).toISOString(),
-          name: "Difusor",
-          price: 60000,
-        },
-        {
-          client: "Angie Chacin",
-          date: new Date(1633379734957).toISOString(),
-          name: "Aceite Lavanda",
-          price: 16000,
-        },
-        {
-          client: "Isaias Gmez",
-          date: new Date(1630792014511).toISOString(),
-          name: "Aceite Pepermint",
-          price: 8000,
-        },
-        {
-          client: "Estefania Chacin",
-          date: new Date(1633379734957).toISOString(),
-          name: "Aceite Lemmon",
-          price: 10000,
-        },
-        {
-          client: "Francisco Chacin",
-          date: new Date(1628115910109).toISOString(),
-          name: "Difusor",
-          price: 60000,
-        },
-      ],
-    },
-    {
-      name: "Ana",
-      lastName: "Rojas",
-      email: "anarojas@gmail.com",
-      phone: "65946216",
-    },
-    {
-      name: "Julio",
-      lastName: "Lopez",
-      associated: true,
-      email: "juliolopez@gmail.com",
-      phone: "65946216",
-    },
-    {
-      name: "Karolina",
-      lastName: "Andrade",
-      email: "karolinaandrade@gmail.com",
-      phone: "65946216",
-    },
-  ],
-};
+  }
+}); 
 
 export default AssociateProfile;

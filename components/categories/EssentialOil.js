@@ -23,6 +23,7 @@ Feather.loadFont();
 
 import { Dimensions } from "react-native";
 import Item from "./ListItem";
+import AssignConsultModal from "./AssignConsultModal";
 const vh = (percent) => (Dimensions.get("window").height * percent) / 100;
 
 const EssentialOil = ({ route, navigation }) => {
@@ -32,6 +33,8 @@ const EssentialOil = ({ route, navigation }) => {
   const [client] = useGlobalState("client");
   const [savedItems, setSavedItems] = useState(client.mySaves); 
   const [loading, setLoading] = useState(false); 
+  const [path, setPath] = useState(null); 
+  const [showAssignConsultModal, setShowAssignConsultModal] = useState(false); 
 
   const sortAlphabetically =  items => items.sort((a, b) =>
     (a.title || a.description || "")
@@ -109,8 +112,17 @@ const EssentialOil = ({ route, navigation }) => {
     });
   };
 
+  const toggleShowAssignConsultModal = () => {
+    setPath({ 
+      mainCategory: removeItems(mainCategory),
+      subcategory: removeItems(subcategory),
+      path: `${ mainCategory.id }/${ subcategory.id }`
+    })
+    setShowAssignConsultModal(!showAssignConsultModal)
+  }
+
   const listHeight = () => {
-    return subcategory.type === 'bullets' ? vh(70) - 70 : vh(70)
+    return subcategory.type === 'bullets' ? vh(70) - 220 : vh(70)
   }
   return (
     <View style={styles.container}>
@@ -174,6 +186,10 @@ const EssentialOil = ({ route, navigation }) => {
         )}
         {subcategory.type === "bullets" ? (
           <View style={styles.actionContainer}>
+            {client.associated && <TouchableOpacity style={styles.actionButtons} onPress={ ()=>toggleShowAssignConsultModal() }>
+              <Feather style={styles.actionButtonIcon} color={colors["brandPurple"]} name={'award'} size={30}/>
+              <Text style={styles.likeButton}>Asignar</Text> 
+            </TouchableOpacity>}
             <TouchableOpacity
               style={styles.actionButtons}
               onPress={() => saveItem()}
@@ -197,7 +213,12 @@ const EssentialOil = ({ route, navigation }) => {
                 size={30}
                 color={colors["brandGreen"]}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> 
+            {/* assign modal */}
+            {showAssignConsultModal && <AssignConsultModal
+              showAssignConsultModal={showAssignConsultModal}
+              path={path}
+              toggleShowAssignConsultModal={toggleShowAssignConsultModal}/>}  
           </View>
         ) : (
           <></>
@@ -206,6 +227,11 @@ const EssentialOil = ({ route, navigation }) => {
     </View>
   );
 };
+
+const removeItems = (obj) => {
+  delete obj.items
+  return obj
+} 
 
 const renderItem = ({
   item,

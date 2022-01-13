@@ -9,6 +9,7 @@ import {
   TextInput,
   Alert,
   Linking,
+  TouchableOpacity,
   Button as RNbutton
 } from "react-native";
 import Intro from "../common/Intro";
@@ -32,7 +33,8 @@ const CreateSale = ({ route, navigation }) => {
   const [client] = useGlobalState("client");
   const [salesData] = useState(siteData.sales);
   const [clients, setClients] = useState([]);
-  const [buyer, setBuyer] = useState(boughtBy, null); 
+  const [buyer, setBuyer] = useState(boughtBy);
+  const [seller, setSeller] = useState({});
   const [loading, setLoading] = useState(false);
   const [sale, setSale] = useState(
     formaInitialtSale(mySale) || {
@@ -85,9 +87,9 @@ const CreateSale = ({ route, navigation }) => {
     setClients(clients.docs.map((doc) => {
       return { ...doc.data(), id: doc.id };
     })
-    .map((doc) => {
-      return { value: doc.id, label: `${ doc.name } ${ doc.lastName }`, key: doc.id };
-    }))
+      .map((doc) => {
+        return { value: doc.id, label: `${doc.name} ${doc.lastName}`, key: doc.id };
+      }))
     setSale(sale)
   }
 
@@ -96,15 +98,29 @@ const CreateSale = ({ route, navigation }) => {
       .collection('clients')
       .doc(sale.clientId)
       .get()
-    if(!buyer.exists) { return; }
+    if (!buyer.exists) { return; }
     setBuyer(buyer.data())
+    if (client.id !== sale.createdBy) {
+      getSeller()
+    }
+  }
+
+  const getSeller = async () => {
+    let theSeller = await firebase.firestore()
+      .collection('clients')
+      .doc(sale.createdBy)
+      .get()
+    if (!theSeller.exists) { return; }
+    setSeller(theSeller.data())
   }
 
   const createSale = async () => {
     setLoading(true);
     const newSale = formatLeavingSale(sale);
-    let salesRef = firebase.firestore().collection("sales").doc();
-    salesRef = await salesRef.set(newSale);
+    let salesRef = firebase.firestore().collection("sales")
+    salesRef = await salesRef.add(newSale);
+    salesRef = firebase.firestore().collection("sales").doc(salesRef.id)
+    salesRef = await salesRef.update({ id: salesRef.id }) 
     showToaster({
       msg: salesData["registered:sale"],
       navigation,
@@ -140,27 +156,40 @@ const CreateSale = ({ route, navigation }) => {
       salesData["confirm:sale:update"],
       [
         { text: "Cancel", style: "cancel", onPress: () => setLoading(false) },
-        { text: "OK", onPress: async() => {
-          setSale({...sale, nulled: value})
-          let salesRef = firebase.firestore().collection("sales").doc(sale.id);
-          salesRef = await salesRef.update({ nulled: value });
-          showToaster({
-            msg: salesData["saving:sale"],
-            navigation,
-          });
-        }},
+        {
+          text: "OK", onPress: async () => {
+            setSale({ ...sale, nulled: value })
+            let salesRef = firebase.firestore().collection("sales").doc(sale.id);
+            salesRef = await salesRef.update({ nulled: value });
+            showToaster({
+              msg: salesData["saving:sale"],
+              navigation,
+            });
+          }
+        },
       ]
     );
-  } 
+  }
 
   const onSelectClient = (value) => {
-    setSale({...sale, clientId: value})
+    setSale({ ...sale, clientId: value })
   };
 
-  useEffect(()=> {
+  const saveStatus = async (status) => {
+    if(sale.status === status.type) { return; }
+    if(client.id !== sale.createdBy) { return; }
+    let saleRef = firebase.firestore().collection("sales").doc(sale.id);
+    await saleRef.update({ status: status.type });
+    showToaster({
+      msg: salesData["saving:sale"]
+    });
+    setSale({ ...sale, status: status.type })
+  }
+
+  useEffect(() => {
     getClients()
     getBuyer()
-    return 
+    return
   }, [])
 
   return (
@@ -179,10 +208,32 @@ const CreateSale = ({ route, navigation }) => {
             }
           />
           {client.id !== sale.createdBy ? <Text>{"\n"}</Text> : <></>}
-          { !create && <View style={{ paddingHorizontal: 30, marginVertical: 20 }}>
+          {/* if nulled */}
+          {sale.nulled && <View style={{
+            paddingVertical: 10,
+            marginBottom: 15,
+            backgroundColor: colors['danger'],
+            flexDirection: 'row',
+            justifyContent: 'center'
+          }}>
+            <Text style={{ fontSize: 15, color: colors['white'] }}>{salesData.nulled} </Text>
+          </View>}
+          {/* sale status */}
+          {!create && <Text style={{ paddingHorizontal: 30, fontSize: 15, marginBottom: 10 }}>{client.id !== sale.createdBy ? salesData.saleStatus : salesData.selectStatus}: </Text>}
+          {!create && <View style={{ paddingHorizontal: 30, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+            <SaleStatus sale={sale} saveStatus={saveStatus} />
+          </View>}
+          {/* seller */}
+          {!create && client.id !== sale.createdBy && seller.email && <View style={{ paddingHorizontal: 30, marginBottom: 20 }}>
+            <Text style={{ fontSize: 15 }}>{salesData.seller}: </Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{seller ? seller.name : 'Not'} {seller ? seller.lastName : 'Found'} </Text>
+            {seller && client.id === buyer.id && <RNbutton onPress={() => Linking.openURL('mailto:' + seller.email)} title={seller.email} />}
+          </View>}
+          {/* client / buyer */}
+          {!create && <View style={{ paddingHorizontal: 30, marginBottom: 20 }}>
             <Text style={{ fontSize: 15 }}>{salesData.client}: </Text>
             <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 10 }}>{buyer ? buyer.name : 'Not'} {buyer ? buyer.lastName : 'Found'} </Text>
-            {client.id !== buyer.id && <RNbutton onPress={() => Linking.openURL('mailto:'+buyer.email) } title={buyer.email} />}
+            {buyer && client.id !== buyer.id && <RNbutton onPress={() => Linking.openURL('mailto:' + buyer.email)} title={buyer.email} />}
           </View>}
           <View style={styles.content}>
             {client.id === sale.createdBy && (
@@ -209,7 +260,7 @@ const CreateSale = ({ route, navigation }) => {
               </Text>
             </View>
             {dateOpen && (
-              <RNDateTimePicker  
+              <RNDateTimePicker
                 minimumDate={minDate}
                 maximumDate={maxDate}
                 testID="dateTimePicker"
@@ -218,14 +269,14 @@ const CreateSale = ({ route, navigation }) => {
                 is24Hour={true}
                 locale="es-ES"
                 onChange={onDateChange}
-                editable={!!create} 
+                editable={!!create}
               />
             )}
             {create && <View style={{
-                ...gs.input,
-                paddingHorizontal: 0,
-                backgroundColor: !!create ? colors["water"] : colors["lightGray"]
-              }}>
+              ...gs.input,
+              paddingHorizontal: 0,
+              backgroundColor: !!create ? colors["water"] : colors["lightGray"]
+            }}>
               <RNPickerSelect
                 onValueChange={onSelectClient}
                 items={clients}
@@ -285,8 +336,8 @@ const CreateSale = ({ route, navigation }) => {
               isOn={sale.nulled}
               onColor={colors['danger']}
               offColor={colors['brandGreen']}
-              label={ sale.nulled ? 'Venta anulada' : 'Venta habilitada' }
-              labelStyle={{...gs.subtitle, marginVertical: 20}}
+              label={sale.nulled ? 'Venta anulada' : 'Venta habilitada'}
+              labelStyle={{ ...gs.subtitle, marginVertical: 20 }}
               size="small"
               onToggle={saveNulled}
             />}
@@ -312,6 +363,32 @@ const CreateSale = ({ route, navigation }) => {
     </View>
   );
 };
+
+const SaleStatus = ({ sale, saveStatus }) => {
+  const [salesStatus] = useGlobalState("salesStatus");
+  return <>
+    {salesStatus.length && salesStatus.map((status, i) => {
+      return (
+        <TouchableOpacity
+          key={i}
+          onPress={()=>saveStatus(status)}>
+          <View style={{
+            backgroundColor: sale.status === status.type ? 
+            colors["brandPurple"] : colors["lightGray"],
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            borderRadius: 50
+          }}>
+            <Text
+            style={{ color: colors["white"] }}>{status.name}</Text>
+          </View>
+        </TouchableOpacity>
+      )
+    })}
+  </>
+}
 
 const formError = (sale) =>
   ["date", "clientId", "title", "price", "description"].some((model) => {
@@ -350,9 +427,8 @@ const showToaster = ({ msg, navigation, error }) => {
     backgroundColor: error ? colors["danger"] : colors["brandGreen"],
     position: 10,
     onHidden: () => {
-      if (error) {
-        return;
-      }
+      if (error) { return; }
+      if(!navigation) { return; }
       navigation.navigate("AssociateProfile", { refreshSales: true });
     },
   });

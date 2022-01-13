@@ -16,6 +16,9 @@ import gs from "../assets/css/GeneralStyles";
 import NavigationTabs from "./common/NavigationTabs";
 import { useGlobalState } from "state-pool";
 import { CommonActions } from "@react-navigation/native";
+import HealthConsultCaontainer from "./healthConsult/HealthConsultCaontainer";
+import { useIsFocused } from '@react-navigation/native';
+import Button from "./common/Button";
 
 const Home = ({ navigation, route }) => {
   const mountedRef = useRef(true);
@@ -24,6 +27,8 @@ const Home = ({ navigation, route }) => {
   const [clientTeam, setclientTeam] = useGlobalState("clientTeam");
   const [siteData] = useGlobalState("siteData");
   const [homeData] = useState(siteData.home);
+  const [consults, setConsults] = useState([])
+  const isFocused = useIsFocused();
 
   const firstName = (name) => name.split(" ")[0];
 
@@ -48,7 +53,6 @@ const Home = ({ navigation, route }) => {
     client = await clientRef.get();
     setUser(client.data());
     setUserListener(client.data().id);
-
     const teamRef = firebase
       .firestore()
       .collection("teams")
@@ -57,7 +61,7 @@ const Home = ({ navigation, route }) => {
     team = { ...team.data(), id: team.id }
     setclientTeam(team); 
     getMainCategories(team);
-
+    getConsults(client.data())
     if (!newClient.name) {
       navigation.navigate("Profile", { firstime: true });
       return;
@@ -148,6 +152,26 @@ const Home = ({ navigation, route }) => {
     }
   };
 
+  const getConsults = async(user) => {
+    let consultsRef = await firebase.firestore()
+      .collection("consults")
+      .where("clientId", "==", user.id)
+      .get()
+    setConsults(consultsRef.docs.map(d=>d.data()))
+  } 
+
+  const goTo = (view, params) => {
+    navigation.navigate(view, params)
+  }
+  
+  useEffect(() => {
+    const refreshOpened = consults.some(c => !c.opened) 
+    if ( isFocused && user && user.id && refreshOpened) { 
+      getConsults(user)
+    }
+    return
+  }, [isFocused]);
+
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(checkForSession);
     return () => {
@@ -173,6 +197,17 @@ const Home = ({ navigation, route }) => {
             </View>
             <View style={styles.textContainer}>
               <Text selectable style={styles.introduction}>{homeData.introduction}</Text>
+            </View>
+            <View style={{ marginTop: 10, }}>
+              <Text style={{...styles.categoryLabel }}>{homeData.healthConsult}</Text>
+              <View style={{ ...styles.card }}>
+                <View style={styles.createConsult}>
+                  <Text style={{fontWeight: 'bold', color: colors['text']}}>{homeData.myConsults}</Text>
+                  <Button onPress={()=>goTo('CreateHealthConsult', {create: true})} fontSize={13} label={homeData.createConsult} background={colors['brandPurple']} />
+                </View>
+                <HealthConsultCaontainer homeData={homeData} consults={consults} navigation={navigation}/>
+                <Button onPress={()=>goTo('HealthConsult', {asClient: true})} marginTop={20} fontSize={15} label={homeData.seeAll} color={'brandPurple'} />
+              </View>
             </View>
             <View style={styles.mainContent}>
               {categoryList && categoryList.length ? (
@@ -240,9 +275,35 @@ const styles = StyleSheet.create({
     color: colors["text"],
   },
   mainContent: {
-    paddingTop: 20,
     paddingBottom: 50,
   },
+  categoryLabel: {
+    fontSize: 25,
+    color: colors["text"],
+    marginBottom: 10,
+    fontWeight: 'bold'
+  },
+  card: {
+    padding: 20,
+    backgroundColor: colors["white"],
+    elevation: 2,
+    shadowColor: "black",
+    shadowOpacity: 0.26,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 5,
+    borderRadius: 20,
+    marginBottom: 20
+  },
+  createConsult: {
+    flexWrap: 'wrap',
+    marginBottom: 20, 
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+    borderBottomWidth: .5,
+    borderBottomColor: colors['lightGray'],
+    paddingBottom: 20,
+    alignItems:'center'
+  }
 });
 
 export default Home;
