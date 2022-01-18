@@ -165,15 +165,14 @@ const styles = StyleSheet.create({
   title: {
     paddingVertical: 5,
     paddingHorizontal: 15,
-    backgroundColor: colors["white"],
-    fontFamily: "Raleway_900Black",
+    backgroundColor: colors["white"], 
     fontSize: 20,
     color: colors["text"],
     borderRadius: 10,
+    overflow: 'hidden'
   },
   description: {
-    color: colors["text"],
-    fontFamily: "Raleway_500Medium",
+    color: colors["text"], 
     fontSize: 15,
     lineHeight: 30,
   },
@@ -193,12 +192,10 @@ const styles = StyleSheet.create({
   actionButtonIcon: {
     marginRight: 10
   },
-  bold: {
-    fontFamily: 'Raleway_900Black'
+  bold: { 
   },
   likeButton: {
-    color: colors['text'],
-    fontFamily: 'Raleway_500Medium'
+    color: colors['text'], 
   },
   usageTypeContainer: {
     marginVertical: 20,

@@ -147,16 +147,13 @@ const styles = StyleSheet.create({
     paddingBottom: 70,
   },
   role: {
-    fontSize: 20,
-    fontFamily: "Raleway_500Medium",
+    fontSize: 20, 
   },
-  memberField: {
-    fontFamily: "Raleway_900Black",
+  memberField: { 
     color: colors["text"],
     fontSize: 16,
   },
-  memberValue: {
-    fontFamily: "Raleway_500Medium",
+  memberValue: { 
     color: colors["text"],
   },
 });

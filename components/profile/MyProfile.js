@@ -82,7 +82,6 @@ const MyProfile = ({ setUser, user, create }) => {
 
 const styles = StyleSheet.create({ 
   listTitle: {
-    fontFamily: 'Raleway_500Medium',
     color: colors['text'],
     paddingHorizontal: 10,
     paddingVertical: 10,

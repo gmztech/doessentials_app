@@ -2,24 +2,19 @@ import { StyleSheet } from "react-native";
 import colors from "../colors/colors";
 
 const GeneralStyles = StyleSheet.create({
-  bold: {
-    fontFamily: "Raleway_900Black",
+  bold: { 
   },
-  medium: {
-    fontFamily: "Raleway_500Medium",
+  medium: { 
   },
-  title: {
-    fontFamily: "Raleway_900Black",
+  title: { 
     fontSize: 20,
     color: colors["text"]
   },
-  subtitle: {
-    fontFamily: "Raleway_900Black",
+  subtitle: { 
     fontSize: 15,
     color: colors["text"]
   },
-  contentText: { 
-    fontFamily: "Raleway_400Regular",
+  contentText: {  
     fontSize: 15,
     color: colors["text"]
   },

@@ -36,11 +36,7 @@ const Profile = ({ navigation, route }) => {
 
   const [selectedTab, setSelectedTab] = useState(
     firstime ? "my_profile" : "my_likes"
-  );
-
-  const setText = (currTab) => {
-    return selectedTab === currTab ? "Raleway_900Black" : "Raleway_500Medium";
-  };
+  ); 
 
   const saveUser = async (newUser = null) => {
     setLoading(true);
@@ -98,7 +94,6 @@ const Profile = ({ navigation, route }) => {
                 <Text
                   style={{
                     ...styles.tabTitleText,
-                    fontFamily: setText("my_likes"),
                   }}
                 >
                   {profileData?.myLikesTabTitle}
@@ -114,7 +109,6 @@ const Profile = ({ navigation, route }) => {
                 <Text
                   style={{
                     ...styles.tabTitleText,
-                    fontFamily: setText("my_profile"),
                   }}
                 >
                   {profileData.myprofileTabTitle}
@@ -130,7 +124,6 @@ const Profile = ({ navigation, route }) => {
                 <Text
                   style={{
                     ...styles.tabTitleText,
-                    fontFamily: setText("my_purchases"),
                   }}
                 >
                   {profileData.mypurchasesTabTitle}
@@ -213,8 +206,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   name: {
-    color: colors["white"],
-    fontFamily: "Raleway_900Black",
+    color: colors["white"], 
     fontSize: 20,
   },
   contact: {

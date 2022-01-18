@@ -6,7 +6,8 @@ import Button from "./Button";
 import firebase from "../../firebase/firebase";
 import { ButtonBack } from "./ButtonBack"; 
 import PlanModal from "./PlanModal";
-import { helpers } from "../../services/helpers";
+import Purchases from 'react-native-purchases';
+
 const ActionBar = ({
   view,
   upliner,
@@ -17,8 +18,6 @@ const ActionBar = ({
 }) => {
   const [siteData] = useGlobalState("siteData");
   const [generalData] = useState(siteData.general);
-  const [plans] = useGlobalState("plans");
-  const [plan] = useState((plans|| []).find(plan => plan.type === helpers.premiumPlan));
   const [user] = useGlobalState("client");
   const [associateModal, setAssociateModal] = useState(false);
   const borderBottomWidth = view && view.indexOf("associate") > -1 ? 0.5 : 0; 
@@ -44,7 +43,6 @@ const ActionBar = ({
       )}
       {associateModal && <PlanModal
         associated={user.associated}
-        plan={plan}
         associateModal={associateModal}
         toggleAssociatePurchase={toggleAssociatePurchase}/>}
     </View>
@@ -60,8 +58,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomColor: "#e3e3e3",
   },
-  createClient: {
-    fontFamily: "Raleway_900Black",
+  createClient: { 
     color: colors["text"],
   }
 });
@@ -70,7 +67,7 @@ const styles = StyleSheet.create({
 const associateLabel = (name, generalData) => (
   <Text style={{ fontSize: 14 }}>
     {generalData.upliner}:{" "}
-    <Text style={{ fontFamily: "Raleway_400Regular" }}> {name}</Text>{" "}
+    <Text> {name}</Text>{" "}
   </Text>
 );
 
@@ -126,7 +123,7 @@ const buttonStrategy = {
       </View>
     </>
   ),
-  profile: ({ backColor, backSize, navigation, generalData }) => (
+  profile: ({ backColor, backSize, navigation, user, generalData }) => (
     <>
       <View>
         <ButtonBack
@@ -139,18 +136,21 @@ const buttonStrategy = {
         <Button
           label={generalData["logout"]}
           color="danger"
-          fontFamily="Raleway_900Black"
-          onPress={() => logout(generalData)}
+          onPress={() => logout(generalData, user)}
         />
       </View>
     </>
   ),
 };
 
-const logout = (generalData) => {
+const logout = (generalData, user) => {
   Alert.alert(generalData["logout"], generalData["confirm:logout"], [
     { text: "Cancel", style: "cancel", onPress: () => setLoading(false) },
-    { text: "OK", onPress: () => firebase.auth().signOut() },
+    { text: "OK", onPress: async() => {
+        firebase.auth().signOut()
+        await Purchases.logIn(user.id)
+      }
+    },
   ]);
 };
 

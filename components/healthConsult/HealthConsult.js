@@ -23,7 +23,7 @@ const HealthConsult = ({ navigation, route }) => {
     const [consults, setConsults] = useState([])
     const [client] = useGlobalState("client");
     const [consultData,] = useState(siteData.consult)
-    const { asClient } = route.params
+    const { asClient } = route.params || {}
 
     const getConsults = async (client) => {
         let consultsRef = await firebase.firestore()
@@ -136,8 +136,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         borderRadius: 20,
     },
-    createText: {
-        fontFamily: "Raleway_900Black",
+    createText: { 
         color: colors["white"],
         borderRadius: 20,
     },
@@ -149,15 +148,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     title: {
-        paddingVertical: 20,
-        fontFamily: "Raleway_900Black",
+        paddingVertical: 20, 
         fontSize: 20,
         color: colors["text"],
         fontWeight: 'bold'
     },
     myTeamDescription: {
-        color: colors["text"],
-        fontFamily: "Raleway_500Medium",
+        color: colors["text"], 
         fontSize: 16,
         marginBottom: 20,
     },
@@ -179,13 +176,11 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     cardHeaderTitle: {
-        color: colors["text"],
-        fontFamily: "Raleway_900Black",
+        color: colors["text"], 
         fontSize: 16,
     },
     cardHeaderButton: {
-        color: colors["brandPurple"],
-        fontFamily: "Raleway_500Medium",
+        color: colors["brandPurple"], 
     },
     memberContainer: {
         flexDirection: "row",

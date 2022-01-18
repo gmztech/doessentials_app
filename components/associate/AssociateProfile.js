@@ -342,7 +342,6 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingVertical: 20,
-    fontFamily: "Raleway_900Black",
     fontSize: 20,
     color: colors["text"],
   },
@@ -364,14 +363,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   cardHeaderTitle: {
-    color: colors["text"],
-    fontFamily: "Raleway_900Black",
+    color: colors["text"], 
     fontSize: 16,
     fontWeight: 'bold'
   },
   cardHeaderButton: {
-    color: colors["brandPurple"],
-    fontFamily: "Raleway_500Medium",
+    color: colors["brandPurple"], 
   },
   memberContainer: {
     flexDirection: "row",
@@ -382,8 +379,7 @@ const styles = StyleSheet.create({
   salesPrice: {
     flexDirection: "row",
   },
-  saleName: {
-    fontFamily: "Raleway_500Medium",
+  saleName: { 
     color: colors["text"],
   }
 }); 

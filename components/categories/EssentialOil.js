@@ -145,9 +145,9 @@ const EssentialOil = ({ route, navigation }) => {
             <Text style={styles.title}>{subcategory.title}</Text>
           </View>
           {/* description */}
-          <View style={{ ...styles.textDescContainer, marginTop: 10 }}>
+          {subcategory.description && subcategory.description.length ? <View style={{ ...styles.textDescContainer, marginTop: 10 }}>
             <Text style={styles.description}>{subcategory.description}</Text>
-          </View>
+          </View> : <></>}
           {/* Search input */}
           <SearchInput onChange={filterItems} />
         </View>
@@ -291,7 +291,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors["white"],
     fontSize: 20,
     color: colors["text"],
-    borderRadius: 10,
+    borderRadius: 10, 
+    overflow: 'hidden'
   },
   description: {
     paddingVertical: 5,
@@ -299,14 +300,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors["white"], 
     fontSize: 15,
     color: colors["text"],
-    borderRadius: 10,
+    borderRadius: 10, 
+    overflow: 'hidden'
   },
   itemCard: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: colors["white"],
-    borderRadius: 10,
+    borderRadius: 10, 
+    overflow: 'hidden',
     padding: 10,
     marginTop: 10,
     borderWidth: 1,
@@ -318,12 +321,11 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
     paddingTop: 1,
-    textAlign: "center",
-    fontFamily: "Raleway_900Black",
+    textAlign: "center", 
     marginRight: 5,
+    overflow: 'hidden'
   },
-  itemTitle: {
-    fontFamily: "Raleway_900Black",
+  itemTitle: { 
     color: colors["text"],
   },
   noResult: {
@@ -332,8 +334,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   bullets: {
-    color: colors["text"],
-    fontFamily: "Raleway_500Medium",
+    color: colors["text"], 
     fontSize: 15,
     marginTop: 10,
   },
@@ -348,6 +349,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     borderRadius: 10,
+    overflow: 'hidden',
     marginRight: 10,
   },
   actionButtonIcon: {

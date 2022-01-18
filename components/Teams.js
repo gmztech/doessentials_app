@@ -178,13 +178,11 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 30,
   },
-  title: {
-    fontFamily: "Raleway_900Black",
+  title: { 
     fontSize: 30,
     color: colors["text"],
   },
-  teamWelcome: {
-    fontFamily: "Raleway_500Medium",
+  teamWelcome: { 
     color: colors["text"],
     fontSize: 18,
   },

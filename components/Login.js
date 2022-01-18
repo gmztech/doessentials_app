@@ -36,8 +36,8 @@ const Login = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
   
-  //const [user, setUser] = useState({ email: 'isaiasegomez@gmail.com', password: 'admin123'}); 
-  const [user, setUser] = useState({ email: 'isaiasegapple@gmail.com', password: 'QJV7TYWW'}); 
+const [user, setUser] = useState({ email: 'isaiasegomez@gmail.com', password: 'admin123'}); 
+  // const [user, setUser] = useState({ email: 'isaiasegapple@gmail.com', password: 'QJV7TYWW'}); 
 
   const checkForSession = async (user) =>{
     if( !user ) { return; }
@@ -248,12 +248,10 @@ const styles = StyleSheet.create({
     paddingTop: vh(25),
   },
   title: {
-    fontSize: 40,
-    fontFamily: "Raleway_900Black",
+    fontSize: 40, 
     color: colors["brandGreen"],
   },
-  description: {
-    fontFamily: "Raleway_400Regular",
+  description: { 
     textAlign: "center",
     color: colors["text"],
   },
@@ -269,7 +267,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   forgotText: {
-    fontFamily: "Raleway_400Regular",
   },
 });
 

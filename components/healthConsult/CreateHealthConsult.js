@@ -108,6 +108,7 @@ const CreateHealthConsult = ({ route, navigation }) => {
                 navigation,
             });
         }
+        setLoading(false);
     };
 
     useEffect(() => {

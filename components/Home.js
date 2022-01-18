@@ -19,11 +19,14 @@ import { CommonActions } from "@react-navigation/native";
 import HealthConsultCaontainer from "./healthConsult/HealthConsultCaontainer";
 import { useIsFocused } from '@react-navigation/native';
 import Button from "./common/Button";
+import { helpers } from "../services/helpers";
+import Purchases from 'react-native-purchases';
 
 const Home = ({ navigation, route }) => {
   const mountedRef = useRef(true);
   const [categoryList, setCategoryList] = useState([]);
   const [user, setUser] = useGlobalState("client"); 
+  const [plan, setPlan] = useGlobalState("plan"); 
   const [clientTeam, setclientTeam] = useGlobalState("clientTeam");
   const [siteData] = useGlobalState("siteData");
   const [homeData] = useState(siteData.home);
@@ -160,23 +163,63 @@ const Home = ({ navigation, route }) => {
     setConsults(consultsRef.docs.map(d=>d.data()))
   } 
 
+  const getPlan = async (user) => {
+    try {
+      Purchases.setDebugLogsEnabled(true); 
+      await Purchases.setup(helpers.RC_APIKEY, user.id);
+      const offerings = await Purchases.getOfferings();
+      if (!offerings.all["default"].availablePackages.length) { return; }
+      const packages = offerings.all["default"].availablePackages
+      const product = packages.find((p) => p.product.identifier === helpers.premiumPlan)
+      if(!product) { return; }
+      const { product: myProduct } = product
+      setPlan({ ...myProduct })
+      purchaseStatus()
+    } catch (error) {
+      console.log('RevenueCat error:', error);
+    }
+  }
+
+  const purchaseStatus = async() => { 
+    try {
+      const purchaserInfo = await Purchases.getPurchaserInfo();
+      if(typeof purchaserInfo.entitlements.active[helpers.RC_ENTITLEMENT] === "undefined") {
+        let userRef = firebase.firestore().collection('clients').doc(user.id)
+        const newUser = { ...user, associated: false }
+        await userRef.update(newUser)
+      }
+    } catch (error) {
+      console.log('RevenueCat error:', error);
+    }
+  } 
+
   const goTo = (view, params) => {
     navigation.navigate(view, params)
-  }
+  } 
   
   useEffect(() => {
     const refreshOpened = consults.some(c => !c.opened) 
     if ( isFocused && user && user.id && refreshOpened) { 
-      getConsults(user)
+      getConsults(user) 
+    }
+    if ( isFocused && user && user.id) {  
+      getPlan(user)
     }
     return
   }, [isFocused]);
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(checkForSession);
+    if ( user && user.id) {  
+      getPlan(user)
+    }
+    return
+  }, [user]);
+
+  useEffect(() => { 
+    const unsubscribe1 = firebase.auth().onAuthStateChanged(checkForSession);
     return () => {
       mountedRef.current = false;
-      unsubscribe();
+      unsubscribe1();
       return 
     };
   }, []);
@@ -249,28 +292,28 @@ const styles = StyleSheet.create({
   textContainer: {
     flexDirection: "row",
     justifyContent: "flex-start",
+    flexWrap: 'wrap',
     marginTop: 10,
   },
   title: {
     paddingVertical: 5,
     paddingHorizontal: 15,
     backgroundColor: colors["brandGreen"],
-    fontFamily: "Raleway_900Black",
     fontSize: 25,
     color: colors["white"],
     borderRadius: 10,
+    overflow: 'hidden'
   },
   introduction: {
     paddingVertical: 5,
     paddingHorizontal: 15,
     backgroundColor: "#ffffffdb",
-    fontFamily: "Raleway_400Regular",
     fontSize: 20,
     color: colors["text"],
     borderRadius: 10,
+    overflow: 'hidden'
   },
   categoryTitle: {
-    fontFamily: "Raleway_900Black",
     fontSize: 20,
     color: colors["text"],
   },

@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 15,
     color: colors["text"],
-    fontFamily: "Raleway_900Black",
   },
 });
 

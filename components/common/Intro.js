@@ -1,11 +1,24 @@
 import React from "react";
-import { View, StyleSheet, Image, ImageBackground } from "react-native";
+import { View, StyleSheet, Image, ImageBackground, Platform } from "react-native";
 import colors from "../../assets/colors/colors";
 import { useGlobalState } from "state-pool";
 
 import { Dimensions } from "react-native";
 const vh = (percent) => (Dimensions.get("window").height * percent) / 100;
 const vw = (percent) => (Dimensions.get("window").width * percent) / 100;
+
+const ps = Platform.select({
+  ios: {
+    introCurve: {
+      bottom: -3
+    }
+  },
+  android: {
+    introCurve: {
+      bottom: 0
+    }
+  }
+});
 
 const Intro = ({ backgroundColor, view = "default", height = 30 }) => { 
   const [team] = useGlobalState("clientTeam"); 
@@ -32,7 +45,7 @@ const Intro = ({ backgroundColor, view = "default", height = 30 }) => {
         >
           <ImageBackground source={{ uri: team.bgs[view] }} style={styles.bg}>
             {view === "login" && logo}
-            <View style={styles.introCurve}>
+            <View style={{...styles.introCurve, ...ps.introCurve}}>
               <ImageBackground
                 source={bgImgStrategy[view] && bgImgStrategy[view]["curve"]}
                 style={{ ...styles.bg, backgroundColor: "transparent" }}
@@ -55,8 +68,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   introCurve: {
-    position: "absolute",
-    bottom: 0,
+    position: "absolute", 
     left: 0,
     height: 135,
     width: "100%",
@@ -65,7 +77,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: null,
     height: null,
-    resizeMode: "cover",
+    resizeMode: "cover"
   },
   logo: {
     resizeMode: "contain",

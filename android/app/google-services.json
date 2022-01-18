@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1019647486375",
+    "project_id": "mezclasesenciales-13d30",
+    "storage_bucket": "mezclasesenciales-13d30.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019647486375:android:2ea28ddb0f6689802eee82",
+        "android_client_info": {
+          "package_name": "com.doessentials.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1019647486375-mqiu0a3ppfkibuq1lp42k8t8bukcfvko.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfjUoMV79aECFbDj9AS9dzmJHZG3lIFUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1019647486375-mqiu0a3ppfkibuq1lp42k8t8bukcfvko.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1019647486375-7h8uqujpkmabg77g0tnusdh5mjegde9r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.doessentials.app",
+                "app_store_id": "1601999031"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

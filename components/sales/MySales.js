@@ -107,8 +107,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 20,
   },
-  createText: {
-    fontFamily: "Raleway_900Black",
+  createText: { 
     color: colors["white"],
     borderRadius: 20,
   },
@@ -120,7 +119,6 @@ const styles = StyleSheet.create({
   },
   mySalesDescription: {
     color: colors["text"],
-    fontFamily: "Raleway_500Medium",
     fontSize: 16,
     marginBottom: 20,
   },

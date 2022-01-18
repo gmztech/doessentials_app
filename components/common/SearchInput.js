@@ -1,13 +1,26 @@
 import React from "react";
-
+import { Platform } from "react-native"
 import { View, TextInput, StyleSheet } from "react-native";
 import colors from "../../assets/colors/colors";
 import Feather from "react-native-vector-icons/Feather"; 
 Feather.loadFont();
 
+const ps = Platform.select({
+  ios: {
+    paddingInputPadding: {
+      paddingVertical: 15
+    }
+  },
+  android: {
+    paddingInputPadding: {
+      paddingVertical: 0
+    }
+  }
+});
+
 const SearchInput = ({ onChange }) => {
   return (
-    <View style={styles.container}>
+    <View style={{...styles.container, ...ps.paddingInputPadding}}>
       <TextInput
         style={{...styles.searchInput}}
         placeholderTextColor={colors["text"]}
@@ -35,7 +48,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     borderRadius: 30,
     paddingLeft: 40,
-    marginVertical: 20,
+    marginVertical: 20
   }, 
   searchIcon: {
     position: "absolute",

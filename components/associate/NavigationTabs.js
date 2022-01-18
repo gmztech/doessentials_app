@@ -106,8 +106,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 10,
-    color: colors["text"],
-    fontFamily: "Raleway_900Black",
+    color: colors["text"], 
   },
 });
 

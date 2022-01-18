@@ -14,7 +14,7 @@ const SalesList = ({ sales, navigation }) => {
     (x, y) => new Date(y.date).getTime() - new Date(x.date).getTime()
   );
   const salesObj = populatePrices(sales);
-  const salesSorted = Object.keys(salesObj);
+  const salesSorted = Object.keys(salesObj); 
   
   return (
     <>
@@ -29,10 +29,7 @@ const SalesList = ({ sales, navigation }) => {
               >
                 <View style={{ ...gs.spaceBetween, ...styles.listItem }}>
                   <View>
-                    <Text style={gs.subtitle}>{sale.title}</Text>
-                    <Text style={{ ...gs.contentText, ...styles.clientName }}>
-                      {salesData["client"]}: {sale.clientName}
-                    </Text>
+                    <Text style={gs.subtitle}>{sale.title}</Text> 
                     <Text style={{ ...gs.contentText, ...styles.clientName }}>
                       {salesData["date"]}: {formatDate(sale.date)}
                     </Text>
@@ -106,7 +103,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   clientName: {
-    fontFamily: "Raleway_500Medium",
     fontSize: 12,
     color: colors["text"],
   },

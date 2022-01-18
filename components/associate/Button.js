@@ -33,7 +33,6 @@ const Button = ({
         {loading ? (
           <Text style={{
             ...styles.buttonText,
-            fontFamily: fontFamily || "Raleway_400Regular",
             fontSize: fontSize || 11,
           }}>{ generalData.loading }</Text>
         ) : (
@@ -41,7 +40,6 @@ const Button = ({
             style={{
               ...styles.buttonText,
               color: colors[color] || "#ffffff",
-              fontFamily: fontFamily || "Raleway_400Regular",
               fontSize: fontSize || 11,
             }}
           >

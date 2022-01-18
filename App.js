@@ -1,10 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-// import {
-//   useFonts,
-//   Raleway_900Black,
-//   Raleway_400Regular,
-//   Raleway_500Medium
-// } from "@expo-google-fonts/raleway";
+import React, { useEffect, useState, useRef } from "react"; 
 import { 
   LogBox
 } from "react-native"; 
@@ -35,7 +29,7 @@ LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 LogBox.ignoreLogs([`AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage`]);
 // Global variable declarations 
 store.setState('siteData', {})
-store.setState('plans', {})
+store.setState('plan', null)
 store.setState('client', {})
 store.setState('usageTypes', {})
 store.setState('salesStatus', {})
@@ -44,7 +38,6 @@ store.setState('clientTeam', null)
 export default function App() {
   const mountedRef = useRef(true)
   const [siteContent, setSiteContent] = useGlobalState('siteData');
-  const [plans, setPlans] = useGlobalState('plans');
   const [usageTypes, setUsageTypes] = useGlobalState('usageTypes');
   const [salesStatus, setSalesStatus] = useGlobalState('salesStatus'); 
   let [fontsLoaded] = useState({ });
@@ -52,11 +45,9 @@ export default function App() {
   const getData = async() => {
     const res = await configs();
     const siteDataContent = (res.find(c => c.type === 'site_content') || {}).data
-    const siteDataPlans = (res.find(c => c.type === 'plans') || {}).data
     const siteDataUsageTypes = (res.find(c => c.type === 'usage_types') || {}).data
     const siteSalesStatus = (res.find(c => c.type === 'sale_status') || {}).data
     setSiteContent(siteDataContent)
-    setPlans(siteDataPlans)
     setUsageTypes(siteDataUsageTypes)
     setSalesStatus(siteSalesStatus)
   }
@@ -68,7 +59,7 @@ export default function App() {
     fetchData();
     return () => { mountedRef.current = false }
   }, [])   
-  if (!fontsLoaded || !Object.keys(siteContent).length || !plans.length || !usageTypes.length || !salesStatus.length) {
+  if (!fontsLoaded || !Object.keys(siteContent).length || !usageTypes.length || !salesStatus.length) {
     return <></>;
   } else {
     return (

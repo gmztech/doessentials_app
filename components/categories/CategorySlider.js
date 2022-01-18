@@ -81,8 +81,7 @@ const styles = StyleSheet.create({
     alignItems: "baseline",
   },
   categoryTitle: {
-    color: colors["white"],
-    fontFamily: "Raleway_500Medium",
+    color: colors["white"], 
     fontSize: 20,
     marginRight: 10,
   },

@@ -66,7 +66,6 @@ const Item = ({ sale, navigation, client, profileData }) => {
 
 const styles = StyleSheet.create({
     listTitle: {
-        fontFamily: 'Raleway_500Medium',
         color: colors['text'],
         paddingHorizontal: 10,
         paddingVertical: 10,

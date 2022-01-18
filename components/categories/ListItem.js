@@ -22,15 +22,12 @@ const Item = ({ item, navigation, color, mainCategory, subcategory, goTo = 'Esse
       >
         <View style={styles.itemCard}>
           <View style={styles.textContainer}>
-            <Text
-              style={{
-                ...styles.firstLetter,
-                backgroundColor: colors[color] || color,
-              }}
-            >
-              {item.title.split("")[0]}
-            </Text>
-            <Text style={{ ...styles.itemTitle }}>{item.title}</Text>
+            <View style={{ ...styles.firstLetter, backgroundColor: colors[color] || color }}>
+              <Text style={styles.itemIcon}>
+                {item.title.split("")[0]}
+              </Text>
+            </View>
+            <Text style={{ ...styles.itemTitle, paddingTop: 1, textAlign: "center",  }}>{item.title}</Text>
           </View>
           <Feather name="chevron-right" size={20} color={colors["lightGray"]} />
         </View>
@@ -43,31 +40,33 @@ const styles = StyleSheet.create({
     itemCard: {
       flexDirection: "row", 
       justifyContent: "space-between",
-      alignItems: "center",
       backgroundColor: colors["white"],
       borderRadius: 10,
       padding: 10,
       marginTop: 10,
       borderWidth: 1,
       borderColor: colors["lightGray"],
+      overflow: 'hidden'
     },
     textContainer: {
       flexDirection: "row",
       justifyContent: "flex-start",
+      alignItems: "center",
       flexWrap: "wrap",
+      position: 'relative'
     },
     firstLetter: {
-      borderRadius: 50,
-      color: colors["white"],
+      borderRadius: 50, 
       width: 25,
-      height: 25,
-      paddingTop: 1,
-      textAlign: "center",
-      fontFamily: "Raleway_900Black",
-      marginRight: 5,
+      height: 25, 
+      marginRight: 5
     },
-    itemTitle: {
-      fontFamily: "Raleway_900Black",
+    itemIcon: {
+      color: colors["white"],
+      textAlign: "center",
+      paddingTop: 3
+    },
+    itemTitle: { 
       color: colors["text"],
     },
     noResult: {
@@ -76,8 +75,7 @@ const styles = StyleSheet.create({
       justifyContent: "center",
     },
     bullets: {
-      color: colors["text"],
-      fontFamily: "Raleway_500Medium",
+      color: colors["text"], 
       fontSize: 15,
       marginTop: 10,
     },
@@ -93,6 +91,7 @@ const styles = StyleSheet.create({
       padding: 10,
       borderRadius: 10,
       marginRight: 10,
+      overflow: 'hidden'
     },
     actionButtonIcon: {
       marginRight: 10,
