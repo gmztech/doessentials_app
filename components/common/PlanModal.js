@@ -74,7 +74,7 @@ const PlanModal = ({
               prefix={"$ "}
               renderText={(value, props) => (
                 <Text style={{ ...gs.bold, color: colors["brandGreen"] }}>
-                  {plan.price_string}
+                  {plan?.price_string}
                 </Text>
               )}
             />

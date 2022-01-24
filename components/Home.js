@@ -32,8 +32,18 @@ const Home = ({ navigation, route }) => {
   const [homeData] = useState(siteData.home);
   const [consults, setConsults] = useState([])
   const isFocused = useIsFocused();
+  let unsubscribeConsultListener;
+  let unsubscribeUserListener;
 
   const firstName = (name) => name.split(" ")[0];
+
+  const setConsultListener = (client) => {
+    return firebase
+      .firestore()
+      .collection("consults")
+      .where('clientId', '==', client.id)
+      .onSnapshot(_ => getConsults(client))
+  }
 
   const getClient = async (loggedUser) => {
     if (!!!loggedUser || !loggedUser.uid) {
@@ -55,7 +65,8 @@ const Home = ({ navigation, route }) => {
     !client.data().id && clientRef.update({ ...newClient });
     client = await clientRef.get();
     setUser(client.data());
-    setUserListener(client.data().id);
+    unsubscribeUserListener = setUserListener(client.data().id);
+    unsubscribeConsultListener = setConsultListener(client.data())
     const teamRef = firebase
       .firestore()
       .collection("teams")
@@ -72,7 +83,7 @@ const Home = ({ navigation, route }) => {
   };
 
   const setUserListener = (userId) => { 
-    firebase
+    return firebase
       .firestore()
       .collection("clients")
       .doc(userId)
@@ -81,7 +92,7 @@ const Home = ({ navigation, route }) => {
         setUser(updatedUser)
         updatedUser.disabled && firebase.auth().signOut()
       })
-  };
+  }
 
   const getMainCategories = async (team) => {
     const mcRef = await firebase.firestore().collection("mainCategories").get();
@@ -195,7 +206,7 @@ const Home = ({ navigation, route }) => {
 
   const goTo = (view, params) => {
     navigation.navigate(view, params)
-  } 
+  }
   
   useEffect(() => {
     const refreshOpened = consults.some(c => !c.opened) 
@@ -220,6 +231,10 @@ const Home = ({ navigation, route }) => {
     return () => {
       mountedRef.current = false;
       unsubscribe1();
+      if(unsubscribeUserListener && unsubscribeConsultListener) {
+        unsubscribeUserListener
+        unsubscribeConsultListener
+      }
       return 
     };
   }, []);

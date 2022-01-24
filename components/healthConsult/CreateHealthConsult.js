@@ -7,7 +7,8 @@ import {
     ScrollView,
     Text,
     TextInput,
-    Alert
+    Alert,
+    TouchableOpacity
 } from "react-native";
 import Intro from "../common/Intro";
 import ActionBar from "../common/ActionBar";
@@ -36,6 +37,7 @@ const CreateHealthConsult = ({ route, navigation }) => {
             notes: ""
         }
     );
+    let unsubscribeConsultListener;
 
     const validateConsult = () => {
         if (loading) {
@@ -65,6 +67,7 @@ const CreateHealthConsult = ({ route, navigation }) => {
         consultRef = await consultRef.add({ ...consult, clientName: `${client.name} ${client.lastName}` });
         consultRef = firebase.firestore().collection("consults").doc(consultRef.id)
         consultRef = await consultRef.update({ id: consultRef.id })
+        setLoading(false);
         showToaster({
             msg: consultData["registered:consult"],
             navigation,
@@ -89,19 +92,20 @@ const CreateHealthConsult = ({ route, navigation }) => {
                 msg: consultData["mandatory:recomendations"],
             });
         }
-        updateConsult(true, consult)
+        setLoading(false);
+        updateConsult(true, {...consult, opened: false})
     }
 
-    const marAsOpened = () => {
-        if(client.id !== consult.clientId || create || consult.opened) { return; }
-        const newConsult = { ...consult, opened: true }
+    const marAsOpened = () => { 
+        if(client.id !== consult.clientId || !!create || consult.opened) { return; }
+        const newConsult = { ...consult, opened: true } 
         setConsult(newConsult)
         updateConsult(false, newConsult)
     } 
 
     const updateConsult = async (showToasterBool, newConsult) => {
         let consultRef = firebase.firestore().collection("consults").doc(consult.id);
-        consultRef = await consultRef.update({ ...newConsult, opened: false });
+        consultRef = await consultRef.update({ ...newConsult });
         if(showToasterBool){
             showToaster({
                 msg: consultData["saving:consult"],
@@ -111,11 +115,18 @@ const CreateHealthConsult = ({ route, navigation }) => {
         setLoading(false);
     };
 
+    const removeRecomendation = (rec) => {
+        const recomendations = consult.recomendations.filter(r => r.path !== rec.path)
+        const newConsult = {...consult, recomendations, opened: false }
+        setConsult(newConsult)
+        updateConsult(false, newConsult)
+    }
+
     useEffect(() => {
         if( !!consult && !!consult.id ) {
             marAsOpened()
         }
-        return
+        return 
     }, [consult])
 
     return (
@@ -220,14 +231,28 @@ const CreateHealthConsult = ({ route, navigation }) => {
                                 <Text>{''}</Text>
                                 <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{consultData.recomendations}:</Text>
                                 {(consult.recomendations || []).map((recomendation, i) => (
-                                    <Item
-                                        key={i}
-                                        item={recomendation.item || null} 
-                                        navigation={navigation}
-                                        mainCategory={recomendation.mainCategory}
-                                        subcategory={recomendation.subcategory}
-                                        goTo={!recomendation.item ? 'EssentialOil' : 'EssentialOilDetail'}
-                                    />
+                                    <View key={i}>
+                                        <Item
+                                            item={recomendation.item || null} 
+                                            navigation={navigation}
+                                            mainCategory={recomendation.mainCategory}
+                                            subcategory={recomendation.subcategory}
+                                            goTo={!recomendation.item ? 'EssentialOil' : 'EssentialOilDetail'}
+                                        />
+                                        {client.id !== consult.clientId && <TouchableOpacity onPress={() => removeRecomendation(recomendation)}>
+                                            <View style={{
+                                                backgroundColor: colors['danger'],
+                                                paddingVertical: 5,
+                                                paddingHorizontal: 10,
+                                                borderRadius: 50,
+                                                position: 'absolute',
+                                                bottom: 30,
+                                                right: 0
+                                            }}>
+                                                <Text style={{ color: '#ffffff' }}>x</Text>
+                                            </View>
+                                        </TouchableOpacity>}
+                                    </View>
                                 ))}
                             </View>
                             : <></>
@@ -237,7 +262,7 @@ const CreateHealthConsult = ({ route, navigation }) => {
                 </ScrollView>
             </SafeAreaView>
             <View style={gs.bottomButton}>
-                {!!create || (consult && consult.clientId !== client.id) ? (
+                {!!create || (consult && consult.clientId !== client.id) && !loading ? (
                     <Button
                         onPress={!!create ? validateConsult : saveConsult}
                         label={!!create ? consultData.register : consultData.saveConsult}

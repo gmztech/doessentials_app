@@ -28,6 +28,7 @@ const AssociateProfile = ({ navigation, route }) => {
   const [team, setTeam] = useState([]);
   const [sales, setSales] = useState([]);
   const [consults, setConsults] = useState([])
+  let unsubscribeConsultListener;
 
   useEffect(() => {
     getTeam();
@@ -72,9 +73,18 @@ const AssociateProfile = ({ navigation, route }) => {
     setConsults(consultsRef.docs.map(d=>d.data()))
   } 
 
+  const setCondultListener = () => firebase
+    .firestore()
+    .collection("consults")
+    .where("upliner", "==", client.id)
+    .onSnapshot((snapshot) => getConsults(client))
+
   useEffect(() => {
-    if ( isFocused ) { getConsults(client) }
-    return
+    if ( isFocused ) {
+      getConsults(client)
+      unsubscribeConsultListener = setCondultListener()
+    }
+    return unsubscribeConsultListener
   }, [isFocused]);
 
   return (
@@ -116,7 +126,7 @@ const AssociateProfile = ({ navigation, route }) => {
                 <Text style={{ paddingBottom: 10, borderBottomColor: colors['lightGray'], borderBottomWidth: .5 }}>{ apData.consultDescription }</Text>
                 {consults.length ? (
                   consults
-                    .slice(0, 4)
+                    .slice(0, 3)
                     .map((consult, i) => (
                       <Consult
                         key={i}

@@ -24,18 +24,28 @@ const HealthConsult = ({ navigation, route }) => {
     const [client] = useGlobalState("client");
     const [consultData,] = useState(siteData.consult)
     const { asClient } = route.params || {}
+    let unsubscribeConsultListener;
 
-    const getConsults = async (client) => {
+    const getConsults = async (clientData) => {
         let consultsRef = await firebase.firestore()
             .collection("consults")
-            .where(asClient ? "clientId" : "upliner", "==", client.id)
+            .where(asClient ? "clientId" : "upliner", "==", clientData.id)
             .get()
         setConsults(consultsRef.docs.map(d => d.data()))
     }
 
+    const setCondultListener = () => firebase
+            .firestore()
+            .collection("consults")
+            .where(asClient ? "clientId" : "upliner", "==", client.id)
+            .onSnapshot((snapshot) => getConsults(client))
+
     useEffect(() => {
-        if (isFocused) { getConsults(client) }
-        return
+        unsubscribeConsultListener = setCondultListener()
+        if (isFocused) {
+            getConsults(client) 
+        } 
+        return unsubscribeConsultListener
     }, [isFocused]);
 
     return (
@@ -92,14 +102,14 @@ const Consult = ({ navigation, consult }) => {
             <View>
                 <Text style={{
                     ...styles.saleName,
-                    color: !consult.recomendations || !consult.recomendations.length || !consult.notes || !consult.notes.length ? colors["brandGreen"] : colors["text"]
+                    color: !consult.opened ? colors["brandGreen"] : colors["text"]
                 }}>
                     {consult.name}
                 </Text>
                 <Text style={{
                     ...styles.saleName,
                     fontWeight: 'bold',
-                    color: !consult.recomendations || !consult.recomendations.length || !consult.notes || !consult.notes.length ? colors["brandGreen"] : colors["text"]
+                    color: !consult.opened ? colors["brandGreen"] : colors["text"]
                 }}>
                     {consult.clientName}
                 </Text>

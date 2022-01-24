@@ -6,7 +6,9 @@ import {
   StatusBar,
   Image,
   Text,
-  ScrollView
+  ScrollView,
+  TouchableOpacity,
+  Linking
 } from "react-native";
 import firebase from "../firebase/firebase";
 import colors from "../assets/colors/colors";
@@ -69,9 +71,17 @@ const Teams = ({ navigation }) => {
     navigation.navigate("Login", { team: theTeam });
   };
 
+  const sendEmail = async() => {
+    try {
+      await Linking.openURL('mailto:info.doessentials@gmail.com?subject=Quiero registrar mi equipo 🙌')
+    } catch (error) {
+      console.log('link error');
+    }
+  }
+
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(checkForSession);
-    if(mountedRef.current){
+    if (mountedRef.current) {
       getTeams();
     }
     return () => {
@@ -137,19 +147,20 @@ const Teams = ({ navigation }) => {
                 loading={loading}
                 onPress={enter}
               />
-            )}
-            {!selectedTeam && <View style={{
-                 paddingVertical: 10,
-                marginTop: 50, borderRadius: 20, borderWidth: 2, borderColor: colors['brandGreen']}}>
-              <Text
-                style={{
-                  color: colors['brandGreen'],
-                  textAlign: "center",
-                }}
-              >
-                ¿Quieres registrar tu equipo?,{"\n"}Contáctanos 👇❤️
-              </Text>
-            </View>}
+            )} 
+            {!selectedTeam && <TouchableOpacity onPress={sendEmail}>
+              <View style={{
+                  paddingVertical: 10,
+                  marginTop: 50,
+                  borderRadius: 20,
+                  borderWidth: 2,
+                  borderColor: colors['brandGreen']
+                }}>
+                <Text style={{ color: colors['brandGreen'], textAlign: "center" }}>
+                  ¿Quieres registrar tu equipo?,{"\n"}Contáctanos 👇❤️
+                </Text>
+              </View>
+            </TouchableOpacity>}
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -178,11 +189,11 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 30,
   },
-  title: { 
+  title: {
     fontSize: 30,
     color: colors["text"],
   },
-  teamWelcome: { 
+  teamWelcome: {
     color: colors["text"],
     fontSize: 18,
   },

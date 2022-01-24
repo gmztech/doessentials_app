@@ -66,26 +66,31 @@ const AssignConsultModal = ({
   }; 
 
   const assignSelection = async() => {
+    try {
       setLoading(true)
-    let consultsRef = await firebase.firestore()
+      let consultsRef = await firebase.firestore()
         .collection("consults")
         .doc(assign.consultId)
-    let consult = await consultsRef.get()
-    consult = consult.data()
-    await consultsRef.update({ recomendations: [...(consult.recomendations || []), path] })
-    showToaster({ 
-        msg: generalData["consult:assigned"],
-    });
-    setLoading(false)
-    toggleShowAssignConsultModal()
+      let consult = await consultsRef.get()
+      consult = consult.data()
+      setLoading(false)
+      const assignation = JSON.stringify(path) 
+      await consultsRef.update('recomendations', firebase.firestore.FieldValue.arrayUnion(JSON.parse(assignation)))
+      await consultsRef.update('opened', false)
+      showToaster({ 
+          msg: generalData["consult:assigned"],
+      });
+      toggleShowAssignConsultModal()
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
-    async function fetchData() { 
-      getClients(client)
-    }
+    async function fetchData() { getClients(client) }
     fetchData();
     return () => {
+      
     }
   }, []);
 

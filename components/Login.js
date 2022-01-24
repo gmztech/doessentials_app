@@ -84,7 +84,7 @@ const [user, setUser] = useState({ email: 'isaiasegomez@gmail.com', password: 'a
     setLoading(true);
     firebase
       .auth()
-      .signInWithEmailAndPassword(user.email, user.password)
+      .signInWithEmailAndPassword(user.email.toLocaleLowerCase(), user.password)
       .then(({ user }) => {
       })
       .catch((error) => {
@@ -180,9 +180,7 @@ const [user, setUser] = useState({ email: 'isaiasegomez@gmail.com', password: 'a
               placeholderTextColor={colors["text"]}
               placeholder="Correo electrónico"
               keyboardType="email-address"
-              autoCompleteType="email"
-              onFocus={() => settoggleFocus(true)}
-              onBlur={() => settoggleFocus(false)}
+              autoCompleteType="email" 
               value={user.email}
               onChange={({ nativeEvent: { text: email } }) =>
                 setUser({ ...user, email })
@@ -196,9 +194,7 @@ const [user, setUser] = useState({ email: 'isaiasegomez@gmail.com', password: 'a
                 placeholderTextColor={colors["text"]}
                 placeholder="Contraseña"
                 secureTextEntry={true}
-                autoCompleteType="password"
-                onFocus={() => settoggleFocus(true)}
-                onBlur={() => settoggleFocus(false)}
+                autoCompleteType="password" 
                 value={user.password}
                 onChange={({ nativeEvent: { text: password } }) =>
                   setUser({ ...user, password })
@@ -218,7 +214,7 @@ const [user, setUser] = useState({ email: 'isaiasegomez@gmail.com', password: 'a
           </View>
         </ScrollView>
       </SafeAreaView>
-      {!toggleFocus && <View style={{ ...gs.bottomButton, opacity: toggleFocus ? 0 : 1 }}>
+      <View style={gs.bottomButton}>
         <Button
           label={forgotMode ? forgotData.action : loginData.action}
           width="100%"
@@ -231,7 +227,7 @@ const [user, setUser] = useState({ email: 'isaiasegomez@gmail.com', password: 'a
           loading={loading}
           onPress={() => (forgotMode ? requestPassword() : login())}
         />
-      </View>}
+      </View>
     </View>
   );
 };
