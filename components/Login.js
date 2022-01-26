@@ -35,8 +35,8 @@ const Login = ({ navigation, route }) => {
   const [toggleFocus, settoggleFocus] = useState(false);
   const [loading, setLoading] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
-  
-const [user, setUser] = useState({ email: 'isaiasegomez@gmail.com', password: 'admin123'}); 
+  const [user, setUser] = useState({}); 
+  // const [user, setUser] = useState({ email: 'isaiasegomez@gmail.com', password: 'admin123'}); 
   // const [user, setUser] = useState({ email: 'isaiasegapple@gmail.com', password: 'QJV7TYWW'}); 
 
   const checkForSession = async (user) =>{

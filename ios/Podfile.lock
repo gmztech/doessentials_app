@@ -779,14 +779,14 @@ PODS:
     - React-Core
   - RNDateTimePicker (4.0.1):
     - React-Core
-  - RNFBApp (14.2.3):
+  - RNFBApp (14.2.4):
     - Firebase/CoreOnly (= 8.11.0)
     - React-Core
-  - RNFBAuth (14.2.3):
+  - RNFBAuth (14.2.4):
     - Firebase/Auth (= 8.11.0)
     - React-Core
     - RNFBApp
-  - RNFBFirestore (14.2.3):
+  - RNFBFirestore (14.2.4):
     - Firebase/Firestore (= 8.11.0)
     - React-Core
     - RNFBApp
@@ -1087,9 +1087,9 @@ SPEC CHECKSUMS:
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
   RNCPicker: f7a40b21b915b7a187624d52f52b7bc2f73ea413
   RNDateTimePicker: 508af087ca2c3c4457f88a6a1437c2604a8ab538
-  RNFBApp: 0d0ffe0e3aacdf9fcad35f90b79bd8a3d3a99844
-  RNFBAuth: e156e2afa8695023b7507f76080527bdd3e38cb7
-  RNFBFirestore: 1ba382d55702376493cf6b7f7c5f9d9389fd9a3a
+  RNFBApp: 7777c22386149f3845f1b0ca74e3d69a574559c5
+  RNFBAuth: 1835fbec6d337a3c875a1936541dc08ce7188794
+  RNFBFirestore: 446dbd0d8ad5c9db0ffadd9e0014bf127692fca0
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNIap: c98c6fa6e0c8ee8b4a79696d6648d9f9431ebbe5
   RNPurchases: 8245f1d52bb3c91e7066c7d4960eb1e3db0a8322
@@ -1099,6 +1099,6 @@ SPEC CHECKSUMS:
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: f5d9bddda5aa4b53f32d3985024ac5e5fc23b685
+PODFILE CHECKSUM: 5fdc002de36632a4fb9e50ef90684df7079646f4
 
 COCOAPODS: 1.11.2
