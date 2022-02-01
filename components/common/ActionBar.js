@@ -15,6 +15,7 @@ const ActionBar = ({
   backSize,
   navigation,
   labelProp,
+  goTo
 }) => {
   const [siteData] = useGlobalState("siteData");
   const [generalData] = useState(siteData.general);
@@ -36,6 +37,7 @@ const ActionBar = ({
           navigation,
           labelProp,
           user,
+          goTo,
           toggleAssociatePurchase,
         })
       ) : (
@@ -73,19 +75,24 @@ const associateLabel = (name, generalData) => (
 
 // Buttons depending on view
 const buttonStrategy = {
-  home: ({ generalData, user, toggleAssociatePurchase }) => (
+  home: ({ generalData, user, toggleAssociatePurchase, goTo }) => (
     <>
       <View></View>
-      {!user.associated && (
+      
         <View style={{ flexDirection: "row" }}>
-          <Button
+        {!user.associated && (<Button
             fontSize={15}
             label={generalData.beAssociate}
             background="brandPurple"
             onPress={() => toggleAssociatePurchase(true)}
+          />)}
+          <Button
+            fontSize={15}
+            label={`${generalData.help}`}
+            background="brandGreen"
+            onPress={()=>goTo('Help')}
           />
-        </View>
-      )}
+        </View> 
     </>
   ),
   associateProfile: ({ upliner, navigation, backSize, generalData }) => (
@@ -136,21 +143,20 @@ const buttonStrategy = {
         <Button
           label={generalData["logout"]}
           color="danger"
-          onPress={() => logout(generalData, user)}
+          onPress={() => logout(generalData, user, navigation)}
         />
       </View>
     </>
   ),
 };
 
-const logout = (generalData, user) => {
+const logout = (generalData, user, navigation) => {
   Alert.alert(generalData["logout"], generalData["confirm:logout"], [
     { text: "Cancel", style: "cancel", onPress: () => setLoading(false) },
     { text: "OK", onPress: async() => {
-        firebase.auth().signOut()
-        await Purchases.logIn(user.id)
-      }
-    },
+      firebase.auth().signOut()
+      navigation.navigate('Teams')
+    } },
   ]);
 };
 

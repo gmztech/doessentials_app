@@ -12,6 +12,7 @@ aceitesEsenciales.jks
 android/app/my-upload-key.keystore
 android/app/debug.keystore
 android/app/google-services.json
+faqs.txt
 
 # macOS
 .DS_Store

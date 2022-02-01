@@ -16,6 +16,7 @@ import Button from "./Button";
 import Purchases from 'react-native-purchases';
 import { helpers } from "../../services/helpers";
 import { firebase } from "@react-native-firebase/firestore";
+import Toast from "react-native-root-toast";
 
 Feather.loadFont();
 
@@ -23,6 +24,7 @@ const PlanModal = ({
   associateModal,
   toggleAssociatePurchase
 }) => { 
+  const [loading, setLoading] = useState(false)
   const [siteData] = useGlobalState("siteData");
   const [client] = useGlobalState("client");
   const [plan] = useGlobalState("plan"); 
@@ -30,14 +32,19 @@ const PlanModal = ({
 
   const purchase = async() => {
     try {
+      setLoading(true)
       const { purchaserInfo } = await Purchases.purchaseProduct(helpers.premiumPlan);
       if(typeof purchaserInfo.entitlements.active[helpers.RC_ENTITLEMENT] === "undefined") { return; }
       let clientRef = firebase.firestore().collection('clients').doc(client.id)
       const newClient = { ...client, associated: true }
       await clientRef.update(newClient)
+      showToaster('Suscripción creada con éxito')
       toggleAssociatePurchase(false)
+      setLoading(false)
     } catch (error) {
       console.log(error);
+      showToaster('Error creando la suscripción, comunicate con el administrador', true)
+      setLoading(false)
     }
   } 
 
@@ -45,14 +52,14 @@ const PlanModal = ({
     <Modal isVisible={associateModal}>
       {/*  */}
       <View style={styles.associateModal}>
-        <TouchableOpacity style={styles.right}>
+        {!loading && <TouchableOpacity style={styles.right}>
           <Feather
             onPress={() => toggleAssociatePurchase(false)}
             name="x"
             size={30}
             color={colors["danger"]}
           />
-        </TouchableOpacity>
+        </TouchableOpacity>}
         <ScrollView>
           <Text style={{ ...gs.title, ...styles.planTitle }}>
             {[...Array(5).keys()].map((_, i) => (
@@ -84,7 +91,7 @@ const PlanModal = ({
           </Text>
           <View style={styles.right}>
             <Button
-              label={generalData["subscribeme"]}
+              label={loading ? 'Cargando...' : generalData["subscribeme"]}
               color="white"
               fontFamily="Raleway_900Black"
               fontSize={15}
@@ -103,6 +110,17 @@ const PlanModal = ({
 };
 
 const formatParagraph = (str='') => str.split("\\n").join("\n");
+
+const showToaster = ({ msg, error }) => {
+  Toast.show(msg, {
+    duration: 5000,
+    shadow: true,
+    animation: true,
+    hideOnPress: true,
+    backgroundColor: error ? colors["danger"] : colors["brandGreen"],
+    position: 10,
+  });
+};
 
 const styles = StyleSheet.create({
   associateModal: {

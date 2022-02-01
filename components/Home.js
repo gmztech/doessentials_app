@@ -31,6 +31,7 @@ const Home = ({ navigation, route }) => {
   const [siteData] = useGlobalState("siteData");
   const [homeData] = useState(siteData.home);
   const [consults, setConsults] = useState([])
+  const [faqList, setFaqList] = useGlobalState("faqList");
   const isFocused = useIsFocused();
   let unsubscribeConsultListener;
   let unsubscribeUserListener;
@@ -43,6 +44,17 @@ const Home = ({ navigation, route }) => {
       .collection("consults")
       .where('clientId', '==', client.id)
       .onSnapshot(_ => getConsults(client))
+  }
+
+  const getFaqs = async () => {
+    try {
+      let setFaqListRef = firebase.firestore().collection('faqs')
+      setFaqListRef = await setFaqListRef.get()
+      setFaqListRef = setFaqListRef._docs.map(item => item._data)
+      setFaqList(setFaqListRef)
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const getClient = async (loggedUser) => {
@@ -76,6 +88,7 @@ const Home = ({ navigation, route }) => {
     setclientTeam(team); 
     getMainCategories(team);
     getConsults(client.data())
+    getFaqs()
     if (!newClient.name) {
       navigation.navigate("Profile", { firstime: true });
       return;
@@ -88,6 +101,7 @@ const Home = ({ navigation, route }) => {
       .collection("clients")
       .doc(userId)
       .onSnapshot((snapshot) => { 
+        if(!snapshot) { return; }
         const updatedUser = snapshot.data() 
         setUser(updatedUser)
         updatedUser.disabled && firebase.auth().signOut()
@@ -194,11 +208,9 @@ const Home = ({ navigation, route }) => {
   const purchaseStatus = async() => { 
     try {
       const purchaserInfo = await Purchases.getPurchaserInfo();
-      if(typeof purchaserInfo.entitlements.active[helpers.RC_ENTITLEMENT] === "undefined") {
-        let userRef = firebase.firestore().collection('clients').doc(user.id)
-        const newUser = { ...user, associated: false }
-        await userRef.update(newUser)
-      }
+      let userRef = firebase.firestore().collection('clients').doc(user.id)
+      const newUser = { ...user, associated: typeof purchaserInfo.entitlements.active[helpers.RC_ENTITLEMENT] === "undefined" && !user.superAdmin ? false : true }
+      await userRef.update(newUser)
     } catch (error) {
       console.log('RevenueCat error:', error);
     }
@@ -245,7 +257,7 @@ const Home = ({ navigation, route }) => {
         <ScrollView>
           <StatusBar></StatusBar>
           {clientTeam && <Intro team={clientTeam} view="home" height={35} />}
-          <ActionBar view="home"></ActionBar>
+          <ActionBar view="home" goTo={goTo}></ActionBar>
           <View style={styles.content}>
             <View style={styles.textContainer}>
               <Text style={{...styles.title, backgroundColor: clientTeam?.primaryColor}}>
@@ -256,6 +268,7 @@ const Home = ({ navigation, route }) => {
             <View style={styles.textContainer}>
               <Text selectable style={styles.introduction}>{homeData.introduction}</Text>
             </View>
+            {/* health consult */}
             <View style={{ marginTop: 10, }}>
               <Text style={{...styles.categoryLabel }}>{homeData.healthConsult}</Text>
               <View style={{ ...styles.card }}>
@@ -267,6 +280,7 @@ const Home = ({ navigation, route }) => {
                 <Button onPress={()=>goTo('HealthConsult', {asClient: true})} marginTop={20} fontSize={15} label={homeData.seeAll} color={'brandPurple'} />
               </View>
             </View>
+            {/* categories */}
             <View style={styles.mainContent}>
               {categoryList && categoryList.length ? (
                 categoryList.map((category, i) => {
@@ -339,7 +353,10 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: colors["text"],
     marginBottom: 10,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    backgroundColor: colors['white'],
+    borderRadius: 10, 
+    paddingVertical: 10
   },
   card: {
     padding: 20,

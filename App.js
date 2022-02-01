@@ -24,6 +24,7 @@ import configs from './assets/data/data';
 import Teams from "./components/Teams";
 import CreateHealthConsult from "./components/healthConsult/CreateHealthConsult";
 import HealthConsult from "./components/healthConsult/HealthConsult";
+import Help from "./components/Help";
 const Stack = createNativeStackNavigator();
 LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 LogBox.ignoreLogs([`AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage`]);
@@ -34,6 +35,7 @@ store.setState('client', {})
 store.setState('usageTypes', {})
 store.setState('salesStatus', {})
 store.setState('clientTeam', null) 
+store.setState('faqList', [])
 
 export default function App() {
   const mountedRef = useRef(true)
@@ -132,6 +134,11 @@ export default function App() {
             <Stack.Screen
               name="HealthConsult"
               component={HealthConsult}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Help"
+              component={Help}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

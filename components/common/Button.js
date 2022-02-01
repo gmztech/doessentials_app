@@ -8,7 +8,6 @@ const Button = ({
   onPress,
   background,
   color,
-  fontFamily,
   width,
   fontSize,
   paddingTop,
