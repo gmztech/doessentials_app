@@ -30,6 +30,7 @@ const Home = ({ navigation, route }) => {
   const [clientTeam, setclientTeam] = useGlobalState("clientTeam");
   const [siteData] = useGlobalState("siteData");
   const [homeData] = useState(siteData.home);
+  const [generalData] = useState(siteData.general);
   const [consults, setConsults] = useState([])
   const [faqList, setFaqList] = useGlobalState("faqList");
   const isFocused = useIsFocused();
@@ -258,6 +259,15 @@ const Home = ({ navigation, route }) => {
           <StatusBar></StatusBar>
           {clientTeam && <Intro team={clientTeam} view="home" height={35} />}
           <ActionBar view="home" goTo={goTo}></ActionBar>
+          <View style={{ paddingHorizontal: 30 }}>
+          <Button
+              paddingTop={5} 
+              label={'Disclaimer de responsabilidad'}
+              background={'water'}
+              color={'text'}
+              fontSize={15}
+              onPress={()=>goTo('Disclaimer')}/>
+          </View>
           <View style={styles.content}>
             <View style={styles.textContainer}>
               <Text style={{...styles.title, backgroundColor: clientTeam?.primaryColor}}>
@@ -279,6 +289,14 @@ const Home = ({ navigation, route }) => {
                 <HealthConsultCaontainer homeData={homeData} consults={consults} navigation={navigation}/>
                 <Button onPress={()=>goTo('HealthConsult', {asClient: true})} marginTop={20} fontSize={15} label={homeData.seeAll} color={'brandPurple'} />
               </View>
+            </View>
+            <View style={{ marginTop: 10, }}>
+            <Text style={{...styles.categoryLabel }}>{generalData.effectiveUsage}</Text>
+              <Button 
+                  label={generalData.effectiveUsageLabel}
+                  background={'brandGreen'}
+                  fontSize={20}
+                  onPress={()=>goTo('SafeUsage')}/> 
             </View>
             {/* categories */}
             <View style={styles.mainContent}>

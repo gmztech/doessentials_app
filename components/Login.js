@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import firebase from "../firebase/firebase";
-import { useIsFocused } from "@react-navigation/core";
 import colors from "../assets/colors/colors";
 import ActionBar from "./common/ActionBar";
 import Intro from "./common/Intro";
@@ -35,16 +34,13 @@ const Login = ({ navigation, route }) => {
   const [toggleFocus, settoggleFocus] = useState(false);
   const [loading, setLoading] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
-  const [user, setUser] = useState({}); 
-  // const [user, setUser] = useState({ email: 'isaiasegomez@gmail.com', password: 'admin123'}); 
-  // const [user, setUser] = useState({ email: 'isaiasegapple@gmail.com', password: 'QJV7TYWW'}); 
+  const [user, setUser] = useState({});
 
   const checkForSession = async (user) =>{
     if( !user ) { return; }
     const clientRef = firebase.firestore().collection('clients').doc(user.uid)
     let client = await clientRef.get()  
     client = client.data()
-
     const clientTeamRef = firebase
       .firestore()
       .collection("teams")

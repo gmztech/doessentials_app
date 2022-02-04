@@ -7,6 +7,7 @@ import {
     StatusBar,
     SafeAreaView,
     TouchableOpacity,
+    Linking
 } from "react-native";
 import colors from "../assets/colors/colors";
 import { useGlobalState } from 'state-pool';
@@ -15,19 +16,26 @@ import Intro from "./common/Intro";
 import Feather from "react-native-vector-icons/Feather";
 import Modal from "react-native-modal"; 
 import Markdown from 'react-native-simple-markdown'
+import Button from "./common/Button";
 Feather.loadFont();
 
 const Help = ({ navigation, route }) => {
     const [siteData,] = useGlobalState('siteData');
     const [faqList,] = useGlobalState('faqList');
     const [helpData,] = useState(siteData.help)
-    const [infoItem, setInfoItem] = useState(null)
-    const { asClient } = route.params || {} 
+    const [infoItem, setInfoItem] = useState(null) 
 
     const setInfoItemFn = (item) => {
         setInfoItem(item)
     } 
 
+    const openBook = async() => {
+        await Linking.openURL('https://www.oily.cl/products/guia-modern-essentials-espanol')
+    }
+
+    const goTo = (path) => {
+        navigation.navigate(path)
+    }
     return (
         <View style={styles.container}>
             <SafeAreaView>
@@ -44,13 +52,29 @@ const Help = ({ navigation, route }) => {
                         {/* title */}
                         <View style={styles.textContainer}>
                             <Text style={styles.title}>{helpData.title} </Text>
-                        </View>
+                        </View> 
                         {/* dessctiption */}
-                        {!asClient && <View>
-                            <Text style={styles.myTeamDescription}>
+                        <View>
+                            <Text style={styles.faqDescription}>
                                 {helpData.description}{" "}
                             </Text>
-                        </View>}
+                        </View> 
+                        {/* disclaimer */}
+                        <View style={styles.disclaimerContainer}>
+                            <Text style={styles.disclaimer}>
+                                <Text style={{ fontWeight: 'bold', color: colors['brandYellow'] }}>Nota importante:</Text>
+                                {'\n'}
+                                La información que presentamos proviene de un proceso de análisis e investigación inspirado por el libro 
+                                <Text style={{ fontWeight: 'bold' }} onPress={openBook}> Guía Modern Essentials - terapia con los aceites esenciales</Text>. Favor leer nuestro disclaimer de responsabilidad
+                                {'\n'}
+                            </Text>
+                            <Button 
+                                label={'Disclaimer de responsabilidad'}
+                                background={'white'}
+                                color={'brandYellow'}
+                                fontSize={15}
+                                onPress={()=>goTo('Disclaimer')}/>
+                        </View>
                         {/* collapses */}
                         <View>
                             <Text style={{ color: colors['brandGreen'] }}>{helpData.forClients}:</Text>
@@ -144,7 +168,7 @@ const styles = StyleSheet.create({
         color: colors["text"],
         fontWeight: 'bold'
     },
-    myTeamDescription: {
+    faqDescription: {
         color: colors["text"],
         fontSize: 16,
         marginBottom: 20,
@@ -204,6 +228,19 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginTop: 10,
     },
+    disclaimer: {
+        fontSize: 13,
+        textAlign: 'center',
+        color: colors['text']
+    },
+    disclaimerContainer: {
+        borderWidth: 1,
+        borderColor: colors['brandYellow'],
+        borderStyle: 'dashed',
+        padding: 10,
+        marginBottom: 20,
+        borderRadius: 20
+    }
 });
 
 export default Help;

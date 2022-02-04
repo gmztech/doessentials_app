@@ -15,12 +15,14 @@ import Intro from "../common/Intro";
 import Feather from "react-native-vector-icons/Feather";
 import { useGlobalState } from "state-pool";
 import AssignConsultModal from "./AssignConsultModal";
+import Button from "../common/Button";
 Feather.loadFont();
 
 const EssentialOilDetail = ({ route, navigation }) => {
   const mountedRef = useRef(true)
   const [siteData] = useGlobalState("siteData");
   const [eoData] = useState(siteData.essentialOilDetail);
+  const [generalData] = useState(siteData.general);
   const [client] = useGlobalState("client"); 
   const [usageTypes] = useGlobalState("usageTypes");
   const [savedItems, setSavedItems] = useState(client.mySaves); 
@@ -118,6 +120,12 @@ const EssentialOilDetail = ({ route, navigation }) => {
               })}
             </View>
           }
+          <Button
+              marginTop={20}
+              label={generalData.effectiveUsageLabel}
+              background={'brandGreen'}
+              fontSize={20}
+              onPress={()=>goTo('SafeUsage')}/> 
           {/* Action */}
           <View style={styles.actionContainer}>
             {client.associated && <TouchableOpacity style={styles.actionButtons} onPress={ ()=>toggleShowAssignConsultModal() }>

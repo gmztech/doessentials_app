@@ -25,6 +25,8 @@ import Teams from "./components/Teams";
 import CreateHealthConsult from "./components/healthConsult/CreateHealthConsult";
 import HealthConsult from "./components/healthConsult/HealthConsult";
 import Help from "./components/Help";
+import Disclaimer from "./components/Disclaimer";
+import SafeUsage from "./components/SafeUsage";
 const Stack = createNativeStackNavigator();
 LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 LogBox.ignoreLogs([`AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage`]);
@@ -141,6 +143,16 @@ export default function App() {
               component={Help}
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              name="Disclaimer"
+              component={Disclaimer}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SafeUsage"
+              component={SafeUsage}
+              options={{ headerShown: false }}
+            /> 
           </Stack.Navigator>
         </NavigationContainer>
       </RootSiblingParent>

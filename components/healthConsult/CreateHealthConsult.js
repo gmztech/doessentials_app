@@ -23,8 +23,11 @@ import Item from "../categories/ListItem";
 const CreateHealthConsult = ({ route, navigation }) => {
     let { create, consult: myConsult } = route.params;
     const [siteData] = useGlobalState("siteData");
+    
     const [client] = useGlobalState("client");
     const [consultData] = useState(siteData.consult);
+    const [generalData] = useState(siteData.general); 
+
     const [loading, setLoading] = useState(false);
     const [consult, setConsult] = useState(
         !!myConsult ? myConsult : {
@@ -36,8 +39,7 @@ const CreateHealthConsult = ({ route, navigation }) => {
             recomendations: [],
             notes: ""
         }
-    );
-    let unsubscribeConsultListener;
+    ); 
 
     const validateConsult = () => {
         if (loading) {
@@ -254,6 +256,12 @@ const CreateHealthConsult = ({ route, navigation }) => {
                                         </TouchableOpacity>}
                                     </View>
                                 ))}
+                                <Button 
+                                    marginTop={20}
+                                    label={generalData.effectiveUsageLabel}
+                                    background={'brandGreen'}
+                                    fontSize={20}
+                                    onPress={()=>goTo('SafeUsage')}/> 
                             </View>
                             : <></>
                         }

@@ -14,7 +14,10 @@ const Button = ({
   paddingBottom,
   borderRadius,
   loading,
-  marginTop
+  marginTop,
+  marginBottom,
+  borderWidth,
+  borderColor
 }) => {
   const [siteData,] = useGlobalState('siteData');   
   const [generalData,] = useState(siteData.general);
@@ -28,7 +31,10 @@ const Button = ({
           paddingTop: paddingTop || 2,
           paddingBottom: paddingBottom || 5,
           borderRadius: borderRadius || 10,
-          marginTop
+          marginTop,
+          marginBottom,
+          borderWidth,
+          borderColor
         }}
       >
         {loading ? (
