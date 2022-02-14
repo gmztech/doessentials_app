@@ -219,7 +219,6 @@ const Home = ({navigation, route}) => {
   const purchaseStatus = async () => {
     try {
       const purchaserInfo = await Purchases.getPurchaserInfo();
-      console.log(purchaserInfo.entitlements.active[helpers.RC_ENTITLEMENT]);
       let userRef = firebase.firestore().collection('clients').doc(user.id);
       const newUser = {
         ...user,
