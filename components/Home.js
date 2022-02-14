@@ -6,6 +6,7 @@ import {
   StatusBar,
   Text,
   ScrollView,
+  Linking,
 } from 'react-native';
 import firebase from '../firebase/firebase';
 import colors from '../assets/colors/colors';
@@ -275,16 +276,6 @@ const Home = ({navigation, route}) => {
           <StatusBar />
           {clientTeam && <Intro team={clientTeam} view="home" height={35} />}
           <ActionBar view="home" goTo={goTo} />
-          <View style={{paddingHorizontal: 30}}>
-            <Button
-              paddingTop={5}
-              label={'Disclaimer de responsabilidad'}
-              background={'water'}
-              color={'text'}
-              fontSize={15}
-              onPress={() => goTo('Disclaimer')}
-            />
-          </View>
           <View style={styles.content}>
             <View style={styles.textContainer}>
               <Text
@@ -358,6 +349,41 @@ const Home = ({navigation, route}) => {
               ) : (
                 <Text style={gs.noResult}>Cargando...</Text>
               )}
+            </View>
+            {/* urls */}
+            <View style={{paddingHorizontal: 30}}>
+              <Button
+                paddingTop={5}
+                label={'Disclaimer de responsabilidad'}
+                background={'white'}
+                color={'text'}
+                fontSize={15}
+                onPress={() => goTo('Disclaimer')}
+              />
+              <Button
+                paddingTop={5}
+                label={'Política de privacidad'}
+                background={'white'}
+                color={'text'}
+                fontSize={15}
+                onPress={() =>
+                  Linking.openURL(
+                    'https://doessentials.cl/politica-de-privacidad.html',
+                  )
+                }
+              />
+              <Button
+                paddingTop={5}
+                label={'Términos y Condiciones'}
+                background={'white'}
+                color={'text'}
+                fontSize={15}
+                onPress={() =>
+                  Linking.openURL(
+                    'https://doessentials.cl/terminos-y-condiciones.html',
+                  )
+                }
+              />
             </View>
           </View>
         </ScrollView>
