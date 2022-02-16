@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   SafeAreaView,
@@ -8,61 +8,65 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
-} from "react-native";
-import firebase from "../firebase/firebase";
-import colors from "../assets/colors/colors";
-import ActionBar from "./common/ActionBar";
-import Intro from "./common/Intro";
-import { Dimensions } from "react-native";
-import Button from "./common/Button";
-import Toast from "react-native-root-toast";
-import { CommonActions } from "@react-navigation/native";
-import { useGlobalState } from 'state-pool';
-import gs from "../assets/css/GeneralStyles";
-import moment from "moment";
+} from 'react-native';
+import firebase from '../firebase/firebase';
+import colors from '../assets/colors/colors';
+import ActionBar from './common/ActionBar';
+import Intro from './common/Intro';
+import {Dimensions} from 'react-native';
+import Button from './common/Button';
+import Toast from 'react-native-root-toast';
+import {CommonActions} from '@react-navigation/native';
+import {useGlobalState} from 'state-pool';
+import gs from '../assets/css/GeneralStyles';
+import moment from 'moment';
 moment().format();
-import { request } from '../services/request'
+import {request} from '../services/request';
 
-const vh = (percent) => (Dimensions.get("window").height * percent) / 100;
+const vh = percent => (Dimensions.get('window').height * percent) / 100;
 
-const Login = ({ navigation, route }) => {
-  const [team, setTeam] = useState(route.params.team)
-  const [siteData,] = useGlobalState('siteData'); 
-  const [loginData,] = useState(siteData.login)
-  const [forgotData,] = useState(siteData.forgot)  
+const Login = ({navigation, route}) => {
+  const [team, setTeam] = useState(route.params.team);
+  const [siteData] = useGlobalState('siteData');
+  const [loginData] = useState(siteData.login);
+  const [forgotData] = useState(siteData.forgot);
   const mountedRef = useRef(true);
   const [toggleFocus, settoggleFocus] = useState(false);
   const [loading, setLoading] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
   const [user, setUser] = useState({});
 
-  const checkForSession = async (user) =>{
-    if( !user ) { return; }
-    const clientRef = firebase.firestore().collection('clients').doc(user.uid)
-    let client = await clientRef.get()  
-    client = client.data()
+  const checkForSession = async user => {
+    if (!user) {
+      return;
+    }
+    const clientRef = firebase.firestore().collection('clients').doc(user.uid);
+    let client = await clientRef.get();
+    client = client.data();
     const clientTeamRef = firebase
       .firestore()
-      .collection("teams")
+      .collection('teams')
       .doc(client.team.id);
     let clientTeam = await clientTeamRef.get();
-    clientTeam = clientTeam.data()
-    if(clientTeam.id !== team.id) {
-      actionToaster("error:auth:wrongTeam");
-      setUser({})
-      setLoading(false)
+    clientTeam = clientTeam.data();
+    if (clientTeam.id !== team.id) {
+      actionToaster('error:auth:wrongTeam');
+      setUser({});
+      setLoading(false);
       return firebase.auth().signOut();
     }
 
-    if ( client.disabled ) {
-      actionToaster("error:auth:disabled");
-      setUser({})
-      setLoading(false)
+    if (client.disabled) {
+      actionToaster('error:auth:disabled');
+      setUser({});
+      setLoading(false);
       return firebase.auth().signOut();
     }
-    user && mountedRef.current && navigation.dispatch(
-      CommonActions.reset({ index: 1, routes: [{ name: "Home" }] })
-    )
+    user &&
+      mountedRef.current &&
+      navigation.dispatch(
+        CommonActions.reset({index: 1, routes: [{name: 'Home'}]}),
+      );
   };
 
   const login = () => {
@@ -71,22 +75,21 @@ const Login = ({ navigation, route }) => {
     }
     if (emailValidator(user)) {
       setLoading(false);
-      return actionToaster("error:wrong:email");
+      return actionToaster('error:wrong:email');
     }
     if (validator(user, forgotMode)) {
       setLoading(false);
-      return actionToaster("error:form");
+      return actionToaster('error:form');
     }
     setLoading(true);
     firebase
       .auth()
       .signInWithEmailAndPassword(user.email.toLocaleLowerCase(), user.password)
-      .then(({ user }) => {
-      })
-      .catch((error) => {
-        console.log("error on login", error);
+      .then(({user}) => {})
+      .catch(error => {
+        console.log('error on login', error);
         setLoading(false);
-        actionToaster("error:auth");
+        actionToaster('error:auth');
       });
   };
 
@@ -96,71 +99,72 @@ const Login = ({ navigation, route }) => {
     }
     if (emailValidator(user)) {
       setLoading(false);
-      return actionToaster("error:wrong:email");
+      return actionToaster('error:wrong:email');
     }
     if (validator(user, forgotMode)) {
       setLoading(false);
-      return actionToaster("error:form");
+      return actionToaster('error:form');
     }
     const docRef = await firebase
       .firestore()
-      .collection("createdClients")
-      .where("email", "==", user.email)
+      .collection('createdClients')
+      .where('email', '==', user.email)
       .get();
 
     if (docRef.empty) {
-      actionToaster("success:forgot");
+      actionToaster('success:forgot');
       setUser({});
       setForgotMode(false);
       setLoading(false);
-      return 
+      return;
     }
     const client = docRef.docs[0];
     const today = moment(Date.now());
     const then = client.data().passwordRequested
       ? moment(client.data().passwordRequested)
       : null;
-    if (!!then && today.diff(then, "minutes") < 15) {
-      return actionToaster("error:trylater");
+    if (!!then && today.diff(then, 'minutes') < 15) {
+      return actionToaster('error:trylater');
     }
-    setLoading(true); 
-    try { 
+    setLoading(true);
+    try {
       await request({
         method: 'POST',
         endpoint: 'request_password',
-        body: { id: client.id, passwordRequested: Date.now() }
-      })
-      actionToaster("success:forgot");
+        body: {id: client.id, passwordRequested: Date.now()},
+        token: client.id,
+      });
+      actionToaster('success:forgot');
       setUser({});
       setForgotMode(false);
       setLoading(false);
     } catch (error) {
       console.log(error);
-      actionToaster("error:auth");
+      actionToaster('error:auth');
     }
   };
 
-  const actionToaster = async (type) => {
+  const actionToaster = async type => {
     await showToaster({
       msg: loginData[type],
       navigation,
-      error: type.indexOf("error") > -1,
+      error: type.indexOf('error') > -1,
       forgotMode,
     });
   };
-  
-  useEffect(() => {  
+
+  useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(checkForSession);
     return () => {
       mountedRef.current = false;
       unsubscribe();
     };
-  }, []); 
+  }, []);
 
-  return ( 
+  return (
     <View style={styles.container}>
       <SafeAreaView>
-        <StatusBar></StatusBar>
+        <StatusBar />
         <ScrollView>
           <Intro team={team} view="login" height={35} />
           <ActionBar />
@@ -173,13 +177,13 @@ const Login = ({ navigation, route }) => {
             </Text>
             <TextInput
               style={gs.input}
-              placeholderTextColor={colors["text"]}
+              placeholderTextColor={colors.text}
               placeholder="Correo electrónico"
               keyboardType="email-address"
-              autoCompleteType="email" 
+              autoCompleteType="email"
               value={user.email}
-              onChange={({ nativeEvent: { text: email } }) =>
-                setUser({ ...user, email })
+              onChange={({nativeEvent: {text: email}}) =>
+                setUser({...user, email})
               }
             />
             {forgotMode ? (
@@ -187,21 +191,20 @@ const Login = ({ navigation, route }) => {
             ) : (
               <TextInput
                 style={gs.input}
-                placeholderTextColor={colors["text"]}
+                placeholderTextColor={colors.text}
                 placeholder="Contraseña"
                 secureTextEntry={true}
-                autoCompleteType="password" 
+                autoCompleteType="password"
                 value={user.password}
-                onChange={({ nativeEvent: { text: password } }) =>
-                  setUser({ ...user, password })
+                onChange={({nativeEvent: {text: password}}) =>
+                  setUser({...user, password})
                 }
               />
             )}
             <View style={styles.forgot}>
               <TouchableOpacity
                 onPress={() => setForgotMode(!forgotMode)}
-                delayLongPress={500}
-              >
+                delayLongPress={500}>
                 <Text style={styles.forgotText}>
                   {forgotMode ? forgotData.back : loginData.forgot}
                 </Text>
@@ -231,56 +234,57 @@ const Login = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
   },
   formContainer: {
     paddingHorizontal: 30,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingTop: vh(25),
   },
   title: {
-    fontSize: 40, 
-    color: colors["brandGreen"],
+    fontSize: 40,
+    color: colors.brandGreen,
   },
-  description: { 
-    textAlign: "center",
-    color: colors["text"],
+  description: {
+    textAlign: 'center',
+    color: colors.text,
   },
   input: {
-    backgroundColor: colors["water"],
+    backgroundColor: colors.water,
     height: 50,
     paddingHorizontal: 20,
-    width: "100%",
+    width: '100%',
     marginTop: 10,
     borderRadius: 10,
   },
   forgot: {
     marginTop: 20,
   },
-  forgotText: {
-  },
+  forgotText: {},
 });
 
 const validator = (user, forgotMode) => {
-  const modelsTocheck = forgotMode ? ["email"] : ["email", "password"]; 
-  return modelsTocheck.some((model) => !user[model] || !user[model].length);
+  const modelsTocheck = forgotMode ? ['email'] : ['email', 'password'];
+  return modelsTocheck.some(model => !user[model] || !user[model].length);
 };
 
-const emailValidator = (user) => {
+const emailValidator = user => {
   let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-  if (!reg.test(user.email)) { return true }
-  return false
-}; 
+  if (!reg.test(user.email)) {
+    return true;
+  }
+  return false;
+};
 
-const showToaster = ({ msg, error, forgot }) => {
+const showToaster = ({msg, error, forgot}) => {
   Toast.show(msg, {
     duration: forgot ? 10000 : 3000,
     shadow: true,
     animation: true,
     hideOnPress: true,
-    backgroundColor: error ? colors["danger"] : colors["brandGreen"],
-    position: 10
+    backgroundColor: error ? colors.danger : colors.brandGreen,
+    position: 50,
   });
 };
 

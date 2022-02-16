@@ -323,17 +323,6 @@ const Home = ({navigation, route}) => {
                 />
               </View>
             </View>
-            <View style={{marginTop: 10}}>
-              <Text style={{...styles.categoryLabel}}>
-                {generalData.effectiveUsage}
-              </Text>
-              <Button
-                label={generalData.effectiveUsageLabel}
-                background={'brandGreen'}
-                fontSize={20}
-                onPress={() => goTo('SafeUsage')}
-              />
-            </View>
             {/* categories */}
             <View style={styles.mainContent}>
               {categoryList && categoryList.length ? (
@@ -349,6 +338,17 @@ const Home = ({navigation, route}) => {
               ) : (
                 <Text style={gs.noResult}>Cargando...</Text>
               )}
+              <View style={{marginTop: 30}}>
+                <Text style={{...styles.categoryLabel}}>
+                  {generalData.effectiveUsage}
+                </Text>
+                <Button
+                  label={generalData.effectiveUsageLabel}
+                  background={'brandGreen'}
+                  fontSize={20}
+                  onPress={() => goTo('SafeUsage')}
+                />
+              </View>
             </View>
             {/* urls */}
             <View style={{paddingHorizontal: 30}}>
