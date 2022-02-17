@@ -31,12 +31,12 @@ const CreateClient = ({route, navigation}) => {
   const {create} = route.params;
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
-    name: 'isaias',
-    lastName: 'gomez',
+    name: '',
+    lastName: '',
     picture: '',
-    email: 'info.doessentials@gmail.com',
-    phone: '123123123',
-    rut: '123123123',
+    email: '',
+    phone: '',
+    rut: '',
     urlDoterra: '',
   });
 

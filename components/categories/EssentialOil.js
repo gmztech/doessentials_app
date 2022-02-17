@@ -162,18 +162,20 @@ const EssentialOil = ({route, navigation}) => {
                 }}>
                 {subcategory.description}
               </Text>
-              <Text
-                style={{
-                  color: colors.brandGreen,
-                  fontWeight: 'bold',
-                  backgroundColor: '#ffffff',
-                  borderRadius: 20,
-                  paddingTop: 10,
-                  paddingLeft: 20,
-                }}
+              <TouchableOpacity
                 onPress={() => setToggleDescription(!toggleDescription)}>
-                {toggleDescription ? 'Ver menos' : 'Ver más'}
-              </Text>
+                <View
+                  style={{
+                    color: colors.brandGreen,
+                    fontWeight: 'bold',
+                    backgroundColor: '#ffffff',
+                    borderRadius: 10,
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                  }}>
+                  <Text>{toggleDescription ? 'Ver menos' : 'Ver más'}</Text>
+                </View>
+              </TouchableOpacity>
             </View>
           ) : (
             <></>

@@ -351,7 +351,7 @@ const Home = ({navigation, route}) => {
               </View>
             </View>
             {/* urls */}
-            <View style={{paddingHorizontal: 30}}>
+            <View style={{paddingHorizontal: 30, marginBottom: 50}}>
               <Button
                 paddingTop={5}
                 label={'Disclaimer de responsabilidad'}
