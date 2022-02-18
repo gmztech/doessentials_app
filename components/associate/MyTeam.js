@@ -17,29 +17,27 @@ import Feather from 'react-native-vector-icons/Feather';
 import {firebase} from '@react-native-firebase/firestore';
 Feather.loadFont();
 
-const MyTeam = ({navigation, route}) => {
-  let {team: myTeam, createdUser} = route.params || {};
-  myTeam = sortAlphabetically(myTeam);
+const MyTeam = ({navigation}) => {
   const isFocused = useIsFocused();
   const [siteData] = useGlobalState('siteData');
   const [client] = useGlobalState('client');
   const [apData] = useState(siteData.associateProfile);
-  const [team, setTeam] = useState(myTeam);
+  const [team, setTeam] = useState([]);
 
-  const getTeams = async () => {
-    let teamsRef = await firebase
+  const getMyClients = async () => {
+    let myclientsRef = await firebase
       .firestore()
       .collection('clients')
-      .where('upliner', '==', client.id)
+      .where('upliner.id', '==', client.id)
       .get();
-    setTeam(teamsRef.docs.map(d => d.data()));
+    myclientsRef = myclientsRef.docs.map(d => d.data());
+    myclientsRef = sortAlphabetically(myclientsRef);
+    setTeam(myclientsRef);
   };
 
   useEffect(() => {
-    // set team
-    setTeam(sortAlphabetically(myTeam));
-    if (createdUser) {
-      getTeams();
+    if (isFocused) {
+      getMyClients();
     }
   }, [isFocused]);
 

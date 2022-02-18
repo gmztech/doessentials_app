@@ -81,21 +81,21 @@ const CreateClient = ({route, navigation}) => {
         .collection('createdClients')
         .doc();
       await createdClientsRef.set({...newUser});
-      const {error} = await request({
+      const response = await request({
         method: 'POST',
         endpoint: 'create_client',
         body: {...newUser},
         token: newUser.id,
       });
-      if (error) {
-        showToaster({msg: JSON.stringify(error), error: true});
+      if (response.error) {
+        showToaster({msg: response.error, error: true});
         setLoading(false);
         return;
       }
       showToaster({msg: apData['success:client:created'], navigation});
     } catch (error) {
       console.log('Client creation error: ', error);
-      navigation.navigate('AssociateProfile', {createdUser: true});
+      navigation.navigate('MyTeam');
     }
   };
 
