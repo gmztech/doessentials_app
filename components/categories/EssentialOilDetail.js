@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     backgroundColor: '#ffffff',
     paddingTop: 20,
+    marginTop: 20,
   },
   actionContainer: {
     flexDirection: 'row',
