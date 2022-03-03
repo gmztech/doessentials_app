@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   Share,
+  ScrollView,
 } from 'react-native';
 import firebase from '../../firebase/firebase';
 import colors from '../../assets/colors/colors';
@@ -30,6 +31,10 @@ const EssentialOilDetail = ({route, navigation}) => {
   const [loading, setLoading] = useState(false);
   const [path, setPath] = useState(null);
   const {item, mainCategory, subcategory} = route.params;
+
+  const goTo = goToPath => {
+    navigation.navigate(goToPath);
+  };
 
   useEffect(() => {
     setSavedItems(client.mySaves);
@@ -93,103 +98,105 @@ const EssentialOilDetail = ({route, navigation}) => {
   ) : (
     <View style={styles.container}>
       <SafeAreaView>
-        <StatusBar />
-        <Intro backgroundColor={item.color} view="essentialOil" height={22} />
-        <ActionBar
-          view={loading ? 'none' : 'default'}
-          backColor={colors.white}
-          backSize={30}
-          navigation={navigation}
-        />
-        {/* title */}
-        <View style={styles.content}>
-          <View style={{...styles.textContainer, marginTop: 10}}>
-            <Text style={styles.title}>{item.title}</Text>
-          </View>
-        </View>
-        <View style={{...styles.content, paddingVertical: 30}}>
-          {/* Description */}
-          <Text style={styles.description}>{item.description}</Text>
-          {/* Usage type */}
-          {subcategory.showUsageType && item.usageType && (
-            <View style={styles.usageTypeContainer}>
-              <Text style={styles.usageTypeLabel}>{eoData.usageType}:</Text>
-              {usageTypes.map((usageType, i) => {
-                return (
-                  <View
-                    key={i}
-                    style={{
-                      ...styles.usageTypeItem,
-                      backgroundColor:
-                        item.usageType && item.usageType === usageType.type
-                          ? colors.brandGreen
-                          : '#e3e3e3',
-                    }}>
-                    <Text style={styles.usageTypeName}>{usageType.name}</Text>
-                  </View>
-                );
-              })}
+        <ScrollView>
+          <StatusBar />
+          <Intro backgroundColor={item.color} view="essentialOil" height={22} />
+          <ActionBar
+            view={loading ? 'none' : 'default'}
+            backColor={colors.white}
+            backSize={30}
+            navigation={navigation}
+          />
+          {/* title */}
+          <View style={styles.content}>
+            <View style={{...styles.textContainer, marginTop: 10}}>
+              <Text style={styles.title}>{item.title}</Text>
             </View>
-          )}
-          {item.usageType && item.usageType === 'topic' && (
-            <Button
-              marginTop={20}
-              label={generalData.effectiveUsageLabel}
-              background={'brandGreen'}
-              fontSize={20}
-              onPress={() => goTo('SafeUsage')}
-            />
-          )}
-          {/* Action */}
-          <View style={styles.actionContainer}>
-            {client.associated && (
+          </View>
+          <View style={{...styles.content, paddingVertical: 30}}>
+            {/* Description */}
+            <Text style={styles.description}>{item.description}</Text>
+            {/* Usage type */}
+            {subcategory.showUsageType && item.usageType && (
+              <View style={styles.usageTypeContainer}>
+                <Text style={styles.usageTypeLabel}>{eoData.usageType}:</Text>
+                {usageTypes.map((usageType, i) => {
+                  return (
+                    <View
+                      key={i}
+                      style={{
+                        ...styles.usageTypeItem,
+                        backgroundColor:
+                          item.usageType && item.usageType === usageType.type
+                            ? colors.brandGreen
+                            : '#e3e3e3',
+                      }}>
+                      <Text style={styles.usageTypeName}>{usageType.name}</Text>
+                    </View>
+                  );
+                })}
+              </View>
+            )}
+            {item.usageType && item.usageType === 'topic' && (
+              <Button
+                marginTop={20}
+                label={generalData.effectiveUsageLabel}
+                background={'brandGreen'}
+                fontSize={20}
+                onPress={() => goTo('SafeUsage')}
+              />
+            )}
+            {/* Action */}
+            <View style={styles.actionContainer}>
+              {client.associated && (
+                <TouchableOpacity
+                  style={styles.actionButtons}
+                  onPress={() => toggleShowAssignConsultModal()}>
+                  <Feather
+                    style={styles.actionButtonIcon}
+                    color={colors.brandPurple}
+                    name={'award'}
+                    size={30}
+                  />
+                  <Text style={styles.likeButton}>Asignar</Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
                 style={styles.actionButtons}
-                onPress={() => toggleShowAssignConsultModal()}>
+                onPress={() => saveItem()}>
                 <Feather
                   style={styles.actionButtonIcon}
-                  color={colors.brandPurple}
-                  name={'award'}
+                  name={loading ? 'clock' : 'heart'}
                   size={30}
+                  color={
+                    itemExist() && !loading ? colors.danger : colors.lightGray
+                  }
                 />
-                <Text style={styles.likeButton}>Asignar</Text>
+                {itemExist() && !loading ? (
+                  <Text style={styles.likeButton}>Me gusta!</Text>
+                ) : (
+                  <></>
+                )}
               </TouchableOpacity>
+              <TouchableOpacity style={styles.actionButtons} onPress={share}>
+                <Feather
+                  style={styles.actionButtonIcon}
+                  name="share"
+                  size={30}
+                  color={colors.brandGreen}
+                />
+              </TouchableOpacity>
+            </View>
+            {/* assign modal */}
+            {showAssignConsultModal && (
+              <AssignConsultModal
+                showAssignConsultModal={showAssignConsultModal}
+                path={path}
+                toggleShowAssignConsultModal={toggleShowAssignConsultModal}
+              />
             )}
-            <TouchableOpacity
-              style={styles.actionButtons}
-              onPress={() => saveItem()}>
-              <Feather
-                style={styles.actionButtonIcon}
-                name={loading ? 'clock' : 'heart'}
-                size={30}
-                color={
-                  itemExist() && !loading ? colors.danger : colors.lightGray
-                }
-              />
-              {itemExist() && !loading ? (
-                <Text style={styles.likeButton}>Me gusta!</Text>
-              ) : (
-                <></>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButtons} onPress={share}>
-              <Feather
-                style={styles.actionButtonIcon}
-                name="share"
-                size={30}
-                color={colors.brandGreen}
-              />
-            </TouchableOpacity>
           </View>
-          {/* assign modal */}
-          {showAssignConsultModal && (
-            <AssignConsultModal
-              showAssignConsultModal={showAssignConsultModal}
-              path={path}
-              toggleShowAssignConsultModal={toggleShowAssignConsultModal}
-            />
-          )}
-        </View>
+        </ScrollView>
       </SafeAreaView>
     </View>
   );
@@ -226,6 +233,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 15,
     lineHeight: 30,
+    backgroundColor: '#ffffff',
+    paddingTop: 20,
   },
   actionContainer: {
     flexDirection: 'row',

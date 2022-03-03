@@ -43,6 +43,10 @@ const CreateHealthConsult = ({route, navigation}) => {
         },
   );
 
+  const goTo = path => {
+    navigation.navigate(path);
+  };
+
   const validateConsult = () => {
     if (loading) {
       return;
@@ -73,7 +77,7 @@ const CreateHealthConsult = ({route, navigation}) => {
       clientName: `${client.name} ${client.lastName}`,
     });
     consultRef = firebase.firestore().collection('consults').doc(consultRef.id);
-    consultRef = await consultRef.update({id: consultRef.id});
+    await consultRef.update({id: consultRef.id});
     setLoading(false);
     showToaster({
       msg: consultData['registered:consult'],
@@ -119,7 +123,7 @@ const CreateHealthConsult = ({route, navigation}) => {
       .firestore()
       .collection('consults')
       .doc(consult.id);
-    consultRef = await consultRef.update({...newConsult});
+    await consultRef.update({...newConsult});
     if (showToasterBool) {
       showToaster({
         msg: consultData['saving:consult'],
@@ -229,12 +233,7 @@ const CreateHealthConsult = ({route, navigation}) => {
             <Text>{'\n'}</Text>
             {/* Respuesta del consultor */}
             {!create && (
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  color: colors.brandPurple,
-                }}>
+              <Text style={styles.purpleTitle}>
                 {consultData.consultAnswer}{' '}
                 {consult.recomendations && consult.recomendations.length
                   ? '✅'
@@ -304,16 +303,7 @@ const CreateHealthConsult = ({route, navigation}) => {
                     {client.id !== consult.clientId && (
                       <TouchableOpacity
                         onPress={() => removeRecomendation(recomendation)}>
-                        <View
-                          style={{
-                            backgroundColor: colors.danger,
-                            paddingVertical: 5,
-                            paddingHorizontal: 10,
-                            borderRadius: 50,
-                            position: 'absolute',
-                            bottom: 30,
-                            right: 0,
-                          }}>
+                        <View style={styles.removeRecomendation}>
                           <Text style={{color: '#ffffff'}}>x</Text>
                         </View>
                       </TouchableOpacity>
@@ -361,5 +351,52 @@ const CreateHealthConsult = ({route, navigation}) => {
     </View>
   );
 };
+
+const formError = user =>
+  ['name', 'description'].some(model => {
+    return !user[model] || !user[model].length;
+  });
+
+const showToaster = ({msg, navigation, error}) => {
+  Toast.show(msg, {
+    duration: 3000,
+    shadow: true,
+    animation: true,
+    hideOnPress: true,
+    backgroundColor: error ? colors.danger : colors.brandGreen,
+    position: 50,
+    onHidden: () => {
+      if (error) {
+        return;
+      }
+      navigation.navigate('MyTeam', {createdUser: true});
+    },
+  });
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  content: {
+    paddingHorizontal: 30,
+    paddingBottom: 70,
+  },
+  removeRecomendation: {
+    backgroundColor: colors.danger,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 50,
+    position: 'absolute',
+    bottom: 30,
+    right: 0,
+  },
+  purpleTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.brandPurple,
+  },
+});
 
 export default CreateHealthConsult;
