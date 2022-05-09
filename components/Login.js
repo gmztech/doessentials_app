@@ -33,10 +33,7 @@ const Login = ({navigation, route}) => {
   const mountedRef = useRef(true); 
   const [loading, setLoading] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
-  const [user, setUser] = useState({
-    email: 'isaiasegomez@gmail.com',
-    password: 'admin123'
-  });
+  const [user, setUser] = useState({ });
 
   const checkForSession = async user => {
     if (!user) {
