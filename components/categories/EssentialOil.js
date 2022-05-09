@@ -272,7 +272,10 @@ const EssentialOil = ({route, navigation}) => {
 };
 
 const removeItems = obj => {
-  delete obj.items;
+  delete obj.items; 
+  if(obj.showUsageType === undefined){
+    delete obj.showUsageType
+  } 
   return obj;
 };
 
