@@ -209,7 +209,8 @@ const Home = ({navigation, route}) => {
         return;
       }
       const {product: myProduct} = product;
-      setPlan({...myProduct});
+      console.log(myProduct);
+      setPlan({...myProduct, description: "Este plan habilita todas las herramientas de asociado. Te regalamos 30 días de uso gratis"});
       purchaseStatus();
     } catch (error) {
       console.log('RevenueCat error:', error);
