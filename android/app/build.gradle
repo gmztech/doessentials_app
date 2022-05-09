@@ -136,8 +136,8 @@ android {
         applicationId "com.doessentials.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 16
-        versionName "1.0.8"
+        versionCode 19
+        versionName "1.0.9"
         missingDimensionStrategy 'store', 'play'
     }
     splits {
