@@ -30,11 +30,13 @@ const Login = ({navigation, route}) => {
   const [siteData] = useGlobalState('siteData');
   const [loginData] = useState(siteData.login);
   const [forgotData] = useState(siteData.forgot);
-  const mountedRef = useRef(true);
-  const [toggleFocus, settoggleFocus] = useState(false);
+  const mountedRef = useRef(true); 
   const [loading, setLoading] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({
+    email: 'isaiasegomez@gmail.com',
+    password: 'admin123'
+  });
 
   const checkForSession = async user => {
     if (!user) {

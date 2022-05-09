@@ -66,6 +66,8 @@ const EssentialOilDetail = ({route, navigation}) => {
         },
       ];
     }
+
+    console.log(newItems);
     await clientRef.set({mySaves: newItems}, {merge: true});
     setLoading(false);
   };
@@ -203,7 +205,10 @@ const EssentialOilDetail = ({route, navigation}) => {
 };
 
 const removeItems = obj => {
-  delete obj.items;
+  delete obj.items; 
+  if(obj.showUsageType === undefined){
+    delete obj.showUsageType
+  } 
   return obj;
 };
 
