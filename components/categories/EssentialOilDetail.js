@@ -65,9 +65,7 @@ const EssentialOilDetail = ({route, navigation}) => {
           path: `${mainCategory.id}/${subcategory.id}/${item.id}`,
         },
       ];
-    }
-
-    console.log(newItems);
+    } 
     await clientRef.set({mySaves: newItems}, {merge: true});
     setLoading(false);
   };
