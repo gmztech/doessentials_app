@@ -110,12 +110,12 @@ const CreateHealthConsult = ({route, navigation}) => {
   };
 
   const marAsOpened = () => {
-    if (client.id !== consult.clientId || !!create || consult.opened) {
-      return;
+    if (consult.opened || !!create) { return; }
+    if(client.id === consult.upliner.id){ 
+      const newConsult = {...consult, opened: true};
+      setConsult(newConsult);
+      updateConsult(false, newConsult);
     }
-    const newConsult = {...consult, opened: true};
-    setConsult(newConsult);
-    updateConsult(false, newConsult);
   };
 
   const updateConsult = async (showToasterBool, newConsult) => {
@@ -325,7 +325,7 @@ const CreateHealthConsult = ({route, navigation}) => {
               consult.upliner !== client.id &&
               consult &&
               (!consult.recomendations || !consult.recomendations.length) && (
-                <Text>{consultData.notAnswerYet}</Text>
+                <Text style={styles.notAnswerYet}>{consultData.notAnswerYet}</Text>
               )}
           </View>
         </ScrollView>
@@ -369,7 +369,7 @@ const showToaster = ({msg, navigation, error}) => {
       if (error) {
         return;
       }
-      navigation.navigate('MyTeam', {createdUser: true});
+      navigation.navigate('HealthConsult');
     },
   });
 };
@@ -378,6 +378,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
+  },
+  notAnswerYet: {
+    textAlign: 'center',
+    paddingVertical: 10
   },
   content: {
     paddingHorizontal: 30,

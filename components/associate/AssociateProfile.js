@@ -58,7 +58,7 @@ const AssociateProfile = ({navigation, route}) => {
     let consultsRef = await firebase
       .firestore()
       .collection('consults')
-      .where('upliner', '==', client.id)
+      .where('upliner.id', '==', client.id)
       .get();
     setConsults(consultsRef.docs.map(d => d.data()));
   };
@@ -67,7 +67,7 @@ const AssociateProfile = ({navigation, route}) => {
     firebase
       .firestore()
       .collection('consults')
-      .where('upliner', '==', client.id)
+      .where('upliner.id', '==', client.id)
       .onSnapshot(snapshot => getConsults(client));
 
   useEffect(() => {
@@ -293,10 +293,7 @@ const Consult = ({navigation, consult}) => {
           style={{
             ...styles.saleName,
             color:
-              !consult.recomendations ||
-              !consult.recomendations.length ||
-              !consult.notes ||
-              !consult.notes.length
+              !consult.opened
                 ? colors.brandGreen
                 : colors.text,
           }}>
@@ -307,10 +304,7 @@ const Consult = ({navigation, consult}) => {
             ...styles.saleName,
             fontWeight: 'bold',
             color:
-              !consult.recomendations ||
-              !consult.recomendations.length ||
-              !consult.notes ||
-              !consult.notes.length
+              !consult.opened
                 ? colors.brandGreen
                 : colors.text,
           }}>
@@ -321,10 +315,7 @@ const Consult = ({navigation, consult}) => {
         name="chevron-right"
         size={20}
         color={
-          !consult.recomendations ||
-          !consult.recomendations.length ||
-          !consult.notes ||
-          !consult.notes.length
+          !consult.opened
             ? colors.brandGreen
             : colors.text
         }

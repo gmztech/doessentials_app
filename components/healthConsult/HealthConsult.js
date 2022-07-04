@@ -30,7 +30,7 @@ const HealthConsult = ({navigation, route}) => {
     let consultsRef = await firebase
       .firestore()
       .collection('consults')
-      .where(asClient ? 'clientId' : 'upliner', '==', clientData.id)
+      .where(asClient ? 'clientId' : 'upliner.id', '==', clientData.id)
       .get();
     setConsults(consultsRef.docs.map(d => d.data()));
   };
@@ -39,7 +39,7 @@ const HealthConsult = ({navigation, route}) => {
     firebase
       .firestore()
       .collection('consults')
-      .where(asClient ? 'clientId' : 'upliner', '==', client.id)
+      .where(asClient ? 'clientId' : 'upliner.id', '==', client.id)
       .onSnapshot(snapshot => getConsults(client));
 
   useEffect(() => {

@@ -35,7 +35,7 @@ const AssignConsultModal = ({
     let consultsRef = await firebase
       .firestore()
       .collection('consults')
-      .where('upliner', '==', client.id)
+      .where('upliner.id', '==', client.id)
       .where('clientId', '==', clientId)
       .get();
     setConsults(
@@ -139,33 +139,35 @@ const AssignConsultModal = ({
             <View
               style={{
                 ...gs.input,
-                paddingHorizontal: 0,
+                paddingHorizontal: 20,
                 backgroundColor: colors.water,
               }}>
-              <RNPickerSelect
+              <Text style={{color: colors.text, fontSize: 15}}>{assign.clientName}</Text>
+              {assign ? <RNPickerSelect
                 onValueChange={onClientSelect}
                 items={clients}
                 placeholder={{label: generalData.selectClient, value: null}}
                 selectedValue={assign.consultId}
                 style={{inputAndroid: {color: colors.text}}}
-              />
+              /> : <></>}
             </View>
-            {assign.clientId && (
+            {assign.clientId ?
               <View
                 style={{
                   ...gs.input,
-                  paddingHorizontal: 0,
+                  paddingHorizontal: 20,
                   backgroundColor: colors.water,
                 }}>
-                <RNPickerSelect
+                <Text style={{color: colors.text, fontSize: 15}}>{assign.name}</Text>
+                {assign ? <RNPickerSelect
                   onValueChange={onConsultSelect}
                   items={consults}
                   placeholder={{label: generalData.selectConsult, value: null}}
                   selectedValue={assign.clientId}
                   style={{inputAndroid: {color: colors.text}}}
-                />
+                /> : <></>}
               </View>
-            )}
+            : <></>}
           </ScrollView>
         </SafeAreaView>
         <View style={gs.bottomButton}>
